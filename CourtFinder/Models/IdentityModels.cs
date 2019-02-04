@@ -9,6 +9,7 @@ namespace CourtFinder.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -23,13 +24,20 @@ namespace CourtFinder.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+
         }
 
         public DbSet<Player> Players { get; set; }
+        public DbSet<CourtOwner> Owners { get; set; }
+        public DbSet<Team> Teams { get; set; }
+        public DbSet<Sport> Sports { get; set; }
+        public DbSet<Court> Courts { get; set; }
+        public DbSet<Event> Events { get; set; }
 
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
         }
+
     }
 }
