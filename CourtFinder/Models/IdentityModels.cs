@@ -25,6 +25,8 @@ namespace CourtFinder.Models
         {
         }
 
+        public DbSet<Player> Players { get; set; }
+
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
