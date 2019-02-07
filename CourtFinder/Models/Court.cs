@@ -11,6 +11,10 @@ namespace CourtFinder.Models
 
     public class Court
     {
+        public Court()
+        {
+            this.Events = new HashSet<Event>();
+        }
         public int CourtID { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }

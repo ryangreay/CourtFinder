@@ -11,6 +11,10 @@ namespace CourtFinder.Models
 
     public class CourtOwner
     {
+        public CourtOwner()
+        {
+            this.Courts = new HashSet<Court>();
+        }
         public int CourtOwnerID { get; set; }
         public string UserID { get; set; }
         [ForeignKey("UserID")]

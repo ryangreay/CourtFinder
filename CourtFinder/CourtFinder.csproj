@@ -200,37 +200,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201902010234038_EventMigraton.cs" />
-    <Compile Include="Migrations\201902010234038_EventMigraton.Designer.cs">
-      <DependentUpon>201902010234038_EventMigraton.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902010237341_test.cs" />
-    <Compile Include="Migrations\201902010237341_test.Designer.cs">
-      <DependentUpon>201902010237341_test.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902010239559_test2.cs" />
-    <Compile Include="Migrations\201902010239559_test2.Designer.cs">
-      <DependentUpon>201902010239559_test2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902010243085_test3.cs" />
-    <Compile Include="Migrations\201902010243085_test3.Designer.cs">
-      <DependentUpon>201902010243085_test3.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902010254411_test.cs" />
-    <Compile Include="Migrations\201902010254411_test.Designer.cs">
-      <DependentUpon>201902010254411_test.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902032057571_BaseObjects.cs" />
-    <Compile Include="Migrations\201902032057571_BaseObjects.Designer.cs">
-      <DependentUpon>201902032057571_BaseObjects.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902032106281_BaseObjects2.cs" />
-    <Compile Include="Migrations\201902032106281_BaseObjects2.Designer.cs">
-      <DependentUpon>201902032106281_BaseObjects2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902032109448_BaseObjects3.cs" />
-    <Compile Include="Migrations\201902032109448_BaseObjects3.Designer.cs">
-      <DependentUpon>201902032109448_BaseObjects3.cs</DependentUpon>
+    <Compile Include="Migrations\201902070027586_Initial.cs" />
+    <Compile Include="Migrations\201902070027586_Initial.Designer.cs">
+      <DependentUpon>201902070027586_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -322,29 +294,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201902010234038_EventMigraton.resx">
-      <DependentUpon>201902010234038_EventMigraton.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902010237341_test.resx">
-      <DependentUpon>201902010237341_test.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902010239559_test2.resx">
-      <DependentUpon>201902010239559_test2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902010243085_test3.resx">
-      <DependentUpon>201902010243085_test3.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902010254411_test.resx">
-      <DependentUpon>201902010254411_test.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902032057571_BaseObjects.resx">
-      <DependentUpon>201902032057571_BaseObjects.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902032106281_BaseObjects2.resx">
-      <DependentUpon>201902032106281_BaseObjects2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902032109448_BaseObjects3.resx">
-      <DependentUpon>201902032109448_BaseObjects3.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201902070027586_Initial.resx">
+      <DependentUpon>201902070027586_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
