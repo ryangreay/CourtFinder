@@ -17,6 +17,7 @@ namespace CourtFinder.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public AccountController()
         {
@@ -155,6 +156,10 @@ namespace CourtFinder.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    Player player = new Player() { UserID = user.Id, FullName = model.FullName, BirthDate = new DateTime(model.Year, model.Month, model.Day)};
+                    db.Players.Add(player);
+                    db.SaveChanges();
+
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
                     
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
@@ -371,6 +376,10 @@ namespace CourtFinder.Controllers
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
+                    Player player = new Player() { UserID = user.Id };
+                    db.Players.Add(player);
+                    db.SaveChanges();
+
                     result = await UserManager.AddLoginAsync(user.Id, info.Login);
                     if (result.Succeeded)
                     {

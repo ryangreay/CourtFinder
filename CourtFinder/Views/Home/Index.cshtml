@@ -2,30 +2,55 @@
     ViewBag.Title = "Home Page";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
+<div class="jumbotron" style="background:linear-gradient(173deg, #e7e7e7 75%, #ffffff 25%) !important">
+    <h1>CourtFinder</h1>
+    <p class="lead">Choose your favorite sport and within minutes play with friends or locals on nearby fields and courts.</p>
+    <hr class="my-4">
+    <a class="btn btn-primary" href="~/Account/Register" role="button">Get Started</a>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
+<div class="container-fluid">
+    <div class="row" style="padding-top:20px;padding-bottom:20px;">
+        <div class="col-12">
+            <h1 class="text-center">How it works!</h1>
+        </div>
     </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card" style="box-shadow:2px 0.36rem 0.75rem rgba(0,0,0,0.075) !important">                
+                <div class="card-body text-center" style="padding-left:5px;padding-right:5px;padding-bottom:7px;">
+                    <img class="card-img-top" src="~/Graphics/team.png" />
+                    <h2>Team up</h2>
+                    <p>Create teams with friends and other users. Join multiple teams and prepare for your next game.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="box-shadow:2px 0.36rem 0.75rem rgba(0,0,0,0.075) !important">                
+                <div class="card-body text-center" style="padding-left:5px;padding-right:5px;padding-bottom:7px;">
+                    <img class="card-img-top" src="~/Graphics/search.png" />
+                    <h2>Search</h2>
+                    <p>Search, find, and join nearby sporting events. Filter by your favorite sport. Join games solo or with teammates. </p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="box-shadow:2px 0.36rem 0.75rem rgba(0,0,0,0.075) !important">               
+                <div class="card-body text-center" style="padding-left:5px;padding-right:5px;padding-bottom:7px;">
+                    <img class="card-img-top" src="~/Graphics/sport.png" />
+                    <h2>Create</h2>
+                    <p>You can easily create and schedule a game if there are not any events nearby that fit your liking.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card" style="box-shadow:2px 0.36rem 0.75rem rgba(0,0,0,0.075) !important">
+                <div class="card-body text-center" style="padding-left:5px;padding-right:5px;padding-bottom:7px;">
+                    <img class="card-img-top" src="~/Graphics/statistics.png" />
+                    <h2>View</h2>
+                    <p>See up-to-date information on upcoming games so you know player reputation and game status.</p>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

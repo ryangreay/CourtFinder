@@ -18,8 +18,7 @@ namespace CourtFinder.Models
     public class Player
     {
         public Player()
-        {
-            this.Sports = new HashSet<Sport>();
+        { 
             this.Teams = new HashSet<Team>();
         }
         public int PlayerID { get; set; }
@@ -27,11 +26,10 @@ namespace CourtFinder.Models
         [ForeignKey("UserID")]
         public ApplicationUser User { get; set; }
         public DateTime BirthDate { get; set; }
+        public string FullName { get; set; }
         public string Gender { get; set; } //maybe something like "Male" "Female" or "M" "F"
         public int Height { get; set; } //maybe store as centimeters then do conversion to feet inch
         public int Weight { get; set; }
-        public string MiddleName { get; set; }
-        public virtual ICollection<Sport> Sports { get; set; }
         public virtual ICollection<Team> Teams { get; set; }
     }
 }

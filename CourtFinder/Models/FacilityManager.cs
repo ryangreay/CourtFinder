@@ -9,17 +9,17 @@ namespace CourtFinder.Models
 //    Title
 //List of Courts they own / oversee
 
-    public class CourtOwner
+    public class FacilityManager
     {
-        public CourtOwner()
+        public FacilityManager()
         {
-            this.Courts = new HashSet<Court>();
+            this.Facilities = new HashSet<Facility>();
         }
-        public int CourtOwnerID { get; set; }
+        public int FacilityManagerID { get; set; }
         public string UserID { get; set; }
         [ForeignKey("UserID")]
         public ApplicationUser User { get; set; }
-        public string Title { get; set; } //of the form UCR Recreation Center
-        public virtual ICollection<Court> Courts { get; set; }
+        public string ManagerTitle { get; set; } //of the form UCR Recreation Center
+        public virtual ICollection<Facility> Facilities { get; set; }
     }
 }

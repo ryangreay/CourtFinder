@@ -28,11 +28,14 @@ namespace CourtFinder.Models
         }
 
         public DbSet<Player> Players { get; set; }
-        public DbSet<CourtOwner> Owners { get; set; }
+        public DbSet<FacilityManager> FacilityManagers { get; set; }
+        public DbSet<Facility> Facility { get; set; }
+        public DbSet<League> Leagues { get; set; }
         public DbSet<Team> Teams { get; set; }
         public DbSet<Sport> Sports { get; set; }
         public DbSet<Court> Courts { get; set; }
-        public DbSet<Event> Events { get; set; }
+        public DbSet<Game> Games { get; set; }
+        public DbSet<Bracket> Brackets { get; set; }
 
         public static ApplicationDbContext Create()
         {
