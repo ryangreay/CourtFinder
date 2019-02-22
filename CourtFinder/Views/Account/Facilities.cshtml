@@ -1,0 +1,82 @@
+﻿@using CourtFinder.Models
+@model FacilitiesViewModel
+@{
+    ViewBag.Title = "Facilities";
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2 class="text-center">Facility Managers</h2>
+            <h4 class="text-center">Manage your courts and leagues. Become visible to players!</h4>
+            <hr style="margin-left:15%;margin-right:15%;" />
+            <h5 style="margin-right:12%; border-radius:1px 20px 20px 1px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02); padding:10px; background:whitesmoke;">
+                <span><img style="width:30px;height:auto;" src="~/Graphics/add.png" /></span> Step 1:&nbsp; Add courts to your facility so users know what you have.
+            </h5>
+            <h5 style="margin-right:8%; border-radius:1px 20px 20px 1px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02); padding:10px; background:whitesmoke;">
+                <span><img style="width:30px;height:auto;" src="~/Graphics/schedule.png" /></span> Step 2:&nbsp; Schedule intramural leagues and auto resolve brackets.
+            </h5>
+            <h5 style="margin-right:4%; border-radius:1px 20px 20px 1px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02); padding:10px; background:whitesmoke;">
+                <span><img style="width:30px;height:auto;" src="~/Graphics/sort.png" /></span> Step 3:&nbsp; Designate open court times and league game times.
+            </h5>
+            <h5 style="border-radius:1px 20px 20px 1px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02); padding:10px; background:whitesmoke;">
+                <span><img style="width:30px;height:auto;" src="~/Graphics/join.png" /></span> Step 4:&nbsp; Let users find your facility, team up, and play in your leagues.
+            </h5>
+        </div>
+        <div class="col-md-5 text-center">          
+            <div style="background:linear-gradient(150deg, #e7e7e7 50%, #fbfbfb 25%); background-color:#fbfbfb; margin-top:30px; padding: 20px 0px 20px 0px; box-shadow:0px 3px 6px rgba(50,50,93,0.15), 0px 3px 0px rgba(0,0,0,0.02);">
+                <h3>Get Started!</h3>
+            @using (Html.BeginForm("Facilities", "Account", FormMethod.Post, new { @class = "form text-center  align-items-center", role = "form" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="col-md-offset-2">
+                    <div class="form-group text-center">
+                        <div class="input-group">
+                            <div class="input-group-addon" style="border:0px;">
+                                <div class="input-group-text"><i class="glyphicon glyphicon-envelope"></i></div>
+                            </div>
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02);" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <div class="input-group">
+                            <div class="input-group-addon" style="border:0px;">
+                                <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
+                            </div>
+                            @Html.TextBoxFor(m => m.FacilityTitle, new { @class = "form-control", @placeholder = "Facility Title", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            @Html.ValidationMessageFor(m => m.FacilityTitle, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <div class="input-group">
+                            <div class="input-group-addon" style="border:0px;">
+                                <div class="input-group-text"><i class="glyphicon glyphicon-lock"></i></div>
+                            </div>
+                            @Html.TextBoxFor(m => m.Password, new {@type = "password", @class = "form-control", @placeholder = "Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <div class="input-group">
+                            <div class="input-group-addon" style="border:0px;">
+                                <div class="input-group-text"><i class="glyphicon glyphicon-lock"></i></div>
+                            </div>
+                            @Html.TextBoxFor(m => m.ConfirmPassword, new { @type = "password", @class = "form-control", @placeholder = "Confirm Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group-btn">
+                        <input type="submit" value="Register" class="btn btn-primary" />
+                    </div>
+                </div>
+            }
+            </div>
+        </div>
+    </div>
+</div>
+

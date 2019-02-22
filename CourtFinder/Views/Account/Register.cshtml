@@ -1,40 +1,86 @@
-﻿@model CourtFinder.Models.RegisterViewModel
+﻿@using CourtFinder.Models
+@model CourtFinder.Models.RegisterViewModel
 @{
     ViewBag.Title = "Register";
 }
 
-<h2>@ViewBag.Title.</h2>
+<h2 style="text-align:center;">@ViewBag.Title.</h2>
+<div class="container">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-4">
+            <div class="card text-center" style="background:linear-gradient(150deg, whitesmoke 50%, #e7e7e7 25%);padding-top:10px;padding-bottom:10px; margin-left:30%;margin-right:30%;background-color: whitesmoke;box-shadow:2px 0.36rem 0.75rem rgba(0,0,0,0.075) !important">
+                <div class="card-body text-center">
+                    <section id="socialLoginForm">
+                        <h5>Register with Google+ or Facebook.</h5>
+                        @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
+                    </section>
+                    <hr />
+                    <h5>Or register with credentials</h5>
+                    @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form text-center  align-items-center", role = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="col-md-offset-2">
+                        <div class="form-group text-center">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="border:0px;">
+                                    <div class="input-group-text"><i class="glyphicon glyphicon-envelope"></i></div>
+                                </div>
+                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02);" })
+                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group text-center">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="border:0px;">
+                                    <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
+                                </div>
+                                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @placeholder = "First Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group text-center">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="border:0px;">
+                                    <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
+                                </div>
+                                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @placeholder = "Last Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group text-center">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="border:0px;">
+                                    <div class="input-group-text"><i class="glyphicon glyphicon-lock"></i></div>
+                                </div>
+                                @Html.TextBoxFor(m => m.Password, new { @type = "password", @class = "form-control", @placeholder = "Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group text-center">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="border:0px;">
+                                    <div class="input-group-text"><i class="glyphicon glyphicon-lock"></i></div>
+                                </div>
+                                @Html.TextBoxFor(m => m.ConfirmPassword, new { @type = "password", @class = "form-control", @placeholder = "Confirm Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
 
-@using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-{
-    @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
-    <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                        <div class="form-group">
+                            <div class="input-group-btn">
+                                <input type="submit" value="Register" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
         </div>
+        <div class="col"></div>
     </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-md-offset-2 col-md-10">
-            <input type="submit" class="btn btn-default" value="Register" />
-        </div>
-    </div>
-}
+</div>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

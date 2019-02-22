@@ -9,9 +9,10 @@
     <div class="row">
         <div class="col"></div>
         <div class="col-4">
-            <div class="card text-center" style="padding-top:10px;padding-bottom:10px; margin-left:30%;margin-right:30%;background-color: whitesmoke;box-shadow:2px 0.36rem 0.75rem rgba(0,0,0,0.075) !important">
+            <div class="card text-center" style="background:linear-gradient(150deg, whitesmoke 50%, #e7e7e7 25%); padding-top:10px;padding-bottom:10px; margin-left:30%;margin-right:30%;background-color: whitesmoke;box-shadow:2px 0.36rem 0.75rem rgba(0,0,0,0.075) !important">
                 <div class="card-body text-center">
                     <section id="socialLoginForm">
+                        <h5>Sign in with Google+ or Facebook.</h5>
                         @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { ReturnUrl = ViewBag.ReturnUrl })
                     </section>
                     <hr />
@@ -35,7 +36,7 @@
                                     <div class="input-group-addon" style="border:0px;">
                                         <div class="input-group-text"><i class="glyphicon glyphicon-lock"></i></div>
                                     </div>
-                                    @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @placeholder = "Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                    @Html.TextBoxFor(m => m.Password, new {@type = "password", @class = "form-control", @placeholder = "Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                                     @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                                 </div>
                             </div>

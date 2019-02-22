@@ -70,16 +70,10 @@ namespace CourtFinder.Models
         public string Email { get; set; }
 
         [Required]
-        public string FullName { get; set; }
+        public string FirstName { get; set; }
 
         [Required]
-        public int Month { get; set; }
-        
-        [Required]
-        public int Day { get; set; }
-
-        [Required]
-        public int Year { get; set; }
+        public string LastName { get; set; }
 
         [Required]
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
@@ -92,6 +86,22 @@ namespace CourtFinder.Models
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
 
+    }
+
+    public class FacilitiesViewModel
+    {
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+        [Required]
+        public string FacilityTitle { get; set; }
+        [Required]
+        [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+        [DataType(DataType.Password)]
+        [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
+        public string ConfirmPassword { get; set; }
     }
 
     public class ResetPasswordViewModel

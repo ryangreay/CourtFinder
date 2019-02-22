@@ -195,6 +195,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Global.asax.cs">
@@ -208,10 +209,15 @@
     <Compile Include="Migrations\201902140057288_Facilityintegration.Designer.cs">
       <DependentUpon>201902140057288_Facilityintegration.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902221937118_facilitymanager-change.cs" />
+    <Compile Include="Migrations\201902221937118_facilitymanager-change.Designer.cs">
+      <DependentUpon>201902221937118_facilitymanager-change.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bracket.cs" />
     <Compile Include="Models\Court.cs" />
+    <Compile Include="Models\DashboardViewModels.cs" />
     <Compile Include="Models\Facility.cs" />
     <Compile Include="Models\FacilityManager.cs" />
     <Compile Include="Models\Game.cs" />
@@ -229,8 +235,12 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Graphics\add.png" />
     <Content Include="Graphics\facebook.png" />
     <Content Include="Graphics\google.png" />
+    <Content Include="Graphics\join.png" />
+    <Content Include="Graphics\schedule.png" />
+    <Content Include="Graphics\sort.png" />
     <Content Include="Graphics\statistics.png" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
@@ -290,6 +300,10 @@
     <Content Include="Views\Manage\VerifyPhoneNumber.cshtml" />
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
+    <Content Include="Views\Dashboard\UserProfile.cshtml" />
+    <Content Include="Views\Dashboard\Search.cshtml" />
+    <Content Include="Views\Account\Facilities.cshtml" />
+    <Content Include="Views\Dashboard\Facility.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -313,6 +327,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902140057288_Facilityintegration.resx">
       <DependentUpon>201902140057288_Facilityintegration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902221937118_facilitymanager-change.resx">
+      <DependentUpon>201902221937118_facilitymanager-change.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

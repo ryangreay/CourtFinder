@@ -19,7 +19,6 @@ namespace CourtFinder.Models
         public string UserID { get; set; }
         [ForeignKey("UserID")]
         public ApplicationUser User { get; set; }
-        public string ManagerTitle { get; set; } //of the form UCR Recreation Center
         public virtual ICollection<Facility> Facilities { get; set; }
     }
 }

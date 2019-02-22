@@ -53,6 +53,45 @@ namespace CourtFinder.Controllers
             }
         }
 
+        [AllowAnonymous]
+        public ActionResult Facilities()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Facilities(FacilitiesViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var result = await UserManager.CreateAsync(user, model.Password);
+                if (result.Succeeded)
+                {
+                    Facility facility = new Facility() { FacilityName = model.FacilityTitle };
+                    FacilityManager manager = new FacilityManager() { UserID = user.Id};
+                    db.FacilityManagers.Add(manager).Facilities.Add(facility);
+                    db.SaveChanges();
+
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    return RedirectToAction("Dashboard", "Facility");
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
         //
         // GET: /Account/Login
         [AllowAnonymous]
@@ -156,7 +195,7 @@ namespace CourtFinder.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    Player player = new Player() { UserID = user.Id, FullName = model.FullName, BirthDate = new DateTime(model.Year, model.Month, model.Day)};
+                    Player player = new Player() { UserID = user.Id, FullName = (model.FirstName + " " + model.LastName)};
                     db.Players.Add(player);
                     db.SaveChanges();
 
@@ -168,7 +207,7 @@ namespace CourtFinder.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Dashboard", "UserProfile");
                 }
                 AddErrors(result);
             }
@@ -361,7 +400,7 @@ namespace CourtFinder.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Index", "Manage");
+                return RedirectToAction("Dashboard", "UserProfile");
             }
 
             if (ModelState.IsValid)
@@ -458,7 +497,7 @@ namespace CourtFinder.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Dashboard", "UserProfile");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult
