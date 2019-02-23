@@ -9,6 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CourtFinder.Models;
+using Microsoft.AspNet.Identity.EntityFramework;
 
 namespace CourtFinder.Controllers
 {
@@ -70,6 +71,7 @@ namespace CourtFinder.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    await this.UserManager.AddToRolesAsync(user.Id, new string[] { "FacilityManager" });
                     Facility facility = new Facility() { FacilityName = model.FacilityTitle };
                     FacilityManager manager = new FacilityManager() { UserID = user.Id};
                     db.FacilityManagers.Add(manager).Facilities.Add(facility);
@@ -83,7 +85,7 @@ namespace CourtFinder.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Dashboard", "Facility");
+                    return RedirectToAction("Facility", "Dashboard");
                 }
                 AddErrors(result);
             }
@@ -115,6 +117,7 @@ namespace CourtFinder.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
+            //var result = await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
             var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
@@ -195,6 +198,7 @@ namespace CourtFinder.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    var role = await UserManager.AddToRolesAsync(user.Id, new string[] { "Player" });
                     Player player = new Player() { UserID = user.Id, FullName = (model.FirstName + " " + model.LastName)};
                     db.Players.Add(player);
                     db.SaveChanges();
@@ -207,7 +211,7 @@ namespace CourtFinder.Controllers
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Dashboard", "UserProfile");
+                    return RedirectToAction("UserProfile", "Dashboard");
                 }
                 AddErrors(result);
             }
@@ -400,7 +404,7 @@ namespace CourtFinder.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
-                return RedirectToAction("Dashboard", "UserProfile");
+                return RedirectToAction("UserProfile", "Dashboard");
             }
 
             if (ModelState.IsValid)
@@ -497,7 +501,9 @@ namespace CourtFinder.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Dashboard", "UserProfile");
+            //string redirectController = User.Identity.IsAuthenticated ? "Home" : "Dashboard";
+            //string redirectAction = (User.IsInRole("Player")  ? "UserProfile" : (User.IsInRole("FacilityManager") ? "Facility" : "Index"));
+            return RedirectToAction("Index", "Home");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

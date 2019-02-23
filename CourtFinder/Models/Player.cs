@@ -25,7 +25,7 @@ namespace CourtFinder.Models
         public string UserID { get; set; }
         [ForeignKey("UserID")]
         public ApplicationUser User { get; set; }
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
         public string FullName { get; set; }
         public string Gender { get; set; } //maybe something like "Male" "Female" or "M" "F"
         public int Height { get; set; } //maybe store as centimeters then do conversion to feet inch

@@ -1,5 +1,4 @@
 ﻿@using Microsoft.AspNet.Identity
-@using CourtFinder.Models
 @if (Request.IsAuthenticated)
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
@@ -10,8 +9,8 @@
         <li>
             @Html.ActionLink("Search", "Search", "Dashboard")
         </li>
-        <li>@* this needs to update: if player go to profile, if facility manager go to facility *@
-            @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "UserProfile", "Dashboard", routeValues: null, htmlAttributes: new { title = "Manage" })
+        <li>
+            @Html.ActionLink(User.Identity.GetUserName(), ((User.IsInRole("Player")) ? "UserProfile" : "Facility"), "Dashboard", routeValues: null, htmlAttributes: new { title = "Manage" })
         </li>
         <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
     </ul>

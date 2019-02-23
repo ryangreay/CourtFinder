@@ -213,6 +213,10 @@
     <Compile Include="Migrations\201902221937118_facilitymanager-change.Designer.cs">
       <DependentUpon>201902221937118_facilitymanager-change.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902230138457_allow nulls on player bdate.cs" />
+    <Compile Include="Migrations\201902230138457_allow nulls on player bdate.Designer.cs">
+      <DependentUpon>201902230138457_allow nulls on player bdate.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bracket.cs" />
@@ -304,6 +308,7 @@
     <Content Include="Views\Dashboard\Search.cshtml" />
     <Content Include="Views\Account\Facilities.cshtml" />
     <Content Include="Views\Dashboard\Facility.cshtml" />
+    <Content Include="Views\Dashboard\Team.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -330,6 +335,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902221937118_facilitymanager-change.resx">
       <DependentUpon>201902221937118_facilitymanager-change.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902230138457_allow nulls on player bdate.resx">
+      <DependentUpon>201902230138457_allow nulls on player bdate.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

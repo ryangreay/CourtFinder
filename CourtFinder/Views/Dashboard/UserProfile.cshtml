@@ -1,7 +1,24 @@
-﻿
+﻿@using Microsoft.AspNet.Identity
 @{
     ViewBag.Title = "Profile";
 }
 
-<h2>Profile</h2>
-
+<h2>Profile Info</h2>
+<hr />
+<h4>@User.Identity.GetUserName()</h4>
+<img alt="User Profile Image" />
+<button type="submit">Change Photo</button>
+<h4>FirstName</h4>
+<h4>LastName</h4>
+<h4>BirthDate Month</h4>
+<h4>BirthDate Day</h4>
+<h4>BirthDate Year</h4>
+<h4>Gender</h4>
+<h4>Height Feet</h4>
+<h4>Height Inches</h4>
+<h4>Weight lb</h4>
+<button type="submit">Save Changes</button>
+<h2>Teams</h2>
+<button>Create Team</button>
+<button>Join Team</button>
+<h4>list of teams. Clickable</h4>

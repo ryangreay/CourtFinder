@@ -1,5 +1,6 @@
 namespace CourtFinder.Migrations
 {
+    using Microsoft.AspNet.Identity.EntityFramework;
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Migrations;
@@ -18,6 +19,9 @@ namespace CourtFinder.Migrations
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
+            context.Roles.AddOrUpdate(new IdentityRole { Name = "Player" });
+            context.Roles.AddOrUpdate(new IdentityRole { Name = "FacilityManager" });
+            context.SaveChanges();
         }
     }
 }
