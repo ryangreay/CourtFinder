@@ -19,6 +19,7 @@ namespace CourtFinder.Models
         public string UserID { get; set; }
         [ForeignKey("UserID")]
         public ApplicationUser User { get; set; }
+        public byte[] ProfileImage { get; set; }
         public virtual ICollection<Facility> Facilities { get; set; }
     }
 }

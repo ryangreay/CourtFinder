@@ -217,6 +217,18 @@
     <Compile Include="Migrations\201902230138457_allow nulls on player bdate.Designer.cs">
       <DependentUpon>201902230138457_allow nulls on player bdate.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902231856599_added profile image field to player.cs" />
+    <Compile Include="Migrations\201902231856599_added profile image field to player.Designer.cs">
+      <DependentUpon>201902231856599_added profile image field to player.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902231900120_edited profile img field.cs" />
+    <Compile Include="Migrations\201902231900120_edited profile img field.Designer.cs">
+      <DependentUpon>201902231900120_edited profile img field.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902231906051_split player fullname to first last fields.cs" />
+    <Compile Include="Migrations\201902231906051_split player fullname to first last fields.Designer.cs">
+      <DependentUpon>201902231906051_split player fullname to first last fields.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bracket.cs" />
@@ -240,9 +252,12 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Graphics\add.png" />
+    <Content Include="Graphics\default_avatar.png" />
     <Content Include="Graphics\facebook.png" />
+    <Content Include="Graphics\female_avatar.png" />
     <Content Include="Graphics\google.png" />
     <Content Include="Graphics\join.png" />
+    <Content Include="Graphics\male_avatar.png" />
     <Content Include="Graphics\schedule.png" />
     <Content Include="Graphics\sort.png" />
     <Content Include="Graphics\statistics.png" />
@@ -312,6 +327,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="images\profile\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -338,6 +354,15 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902230138457_allow nulls on player bdate.resx">
       <DependentUpon>201902230138457_allow nulls on player bdate.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902231856599_added profile image field to player.resx">
+      <DependentUpon>201902231856599_added profile image field to player.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902231900120_edited profile img field.resx">
+      <DependentUpon>201902231900120_edited profile img field.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902231906051_split player fullname to first last fields.resx">
+      <DependentUpon>201902231906051_split player fullname to first last fields.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

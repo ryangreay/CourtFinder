@@ -1,24 +1,261 @@
 ﻿@using Microsoft.AspNet.Identity
+@using CourtFinder.Models
+@model CourtFinder.Models.ProfileViewModel
 @{
     ViewBag.Title = "Profile";
 }
 
-<h2>Profile Info</h2>
-<hr />
-<h4>@User.Identity.GetUserName()</h4>
-<img alt="User Profile Image" />
-<button type="submit">Change Photo</button>
-<h4>FirstName</h4>
-<h4>LastName</h4>
-<h4>BirthDate Month</h4>
-<h4>BirthDate Day</h4>
-<h4>BirthDate Year</h4>
-<h4>Gender</h4>
-<h4>Height Feet</h4>
-<h4>Height Inches</h4>
-<h4>Weight lb</h4>
-<button type="submit">Save Changes</button>
-<h2>Teams</h2>
-<button>Create Team</button>
-<button>Join Team</button>
-<h4>list of teams. Clickable</h4>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Profile Info</h2>
+            <hr />
+            @if (User.Identity.GetUserId() == Model.player.UserID)
+            {
+                <img class="col-md-offset-5" style="box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02); border-radius: 50%; width:100px; height:auto;" src="@(Model.player.ProfileImage != null ? Html.Raw(Model.player.ProfileImage) : (Model.player.Gender == "Male" ? Html.Raw("/Graphics/male_avatar.png") : (Model.player.Gender == "Female" ? Html.Raw("/Graphics/female_avatar.png") : Html.Raw("/Graphics/default_avatar.png"))))" alt="User Profile Image" />
+                using (Html.BeginForm("FileUpload", "Dashboard", FormMethod.Post, new {@id="changephoto", @class = "form text-center", enctype = "multipart/form-data" }))
+                {
+                    <input class="col-md-offset-5 " type="file" name="file" id="file" style="box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02); border:0px; padding:10px;" />
+                    <button class="btn btn-primary" style="padding:0px;" value="Upload" type="submit">Change Photo</button>
+                }
+
+                using (Html.BeginForm("SaveProfile", "Dashboard", FormMethod.Post, new { @class = "form" }))
+                {
+                    <div class="form-row" style="padding:30px 0 30px 0;">
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="border:0px;">
+                                    <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
+                                </div>
+                                @Html.TextBoxFor(m => m.player.FirstName, new { @class = "form-control", @placeholder = "First Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                @Html.ValidationMessageFor(m => m.player.FirstName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <div class="input-group-addon" style="border:0px;">
+                                    <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
+                                </div>
+                                @Html.TextBoxFor(m => m.player.LastName, new { @Value = Model.player.LastName, @class = "form-control", @placeholder = "Last Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                @Html.ValidationMessageFor(m => m.player.LastName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row" style="padding:30px 0 30px 0;">
+                        <div class="col-md-2">
+                            <h5>Birthday: </h5>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group">
+
+                                @Html.DropDownList("month", Enumerable.Range(1, 12).Select(i => new SelectListItem { Value = i.ToString(), Text = System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName(i) }),
+(Model.player.BirthDate.HasValue ? Model.player.BirthDate.Value.ToString("MMM") : "Month"), new { @class = "custom-select", @style = "padding:8px 20px 8px 20px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group">
+
+                                @Html.DropDownList("day", Enumerable.Range(1, 31).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
+(Model.player.BirthDate.HasValue ? Model.player.BirthDate.Value.ToString("dd") : "Day"),
+new { @class = "form-contol", @style = "padding:8px 20px 8px 20px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group">
+
+                                @Html.DropDownList("year", Enumerable.Range(1900, 109).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
+(Model.player.BirthDate.HasValue ? Model.player.BirthDate.Value.ToString("yyyy") : "Year"),
+new { @class = "form-contol", @style = "padding:8px 20px 8px 20px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            </div>
+
+                        </div>
+                    </div>                  
+                    <div class="form-row" style="padding:30px 0 30px 0;">
+                        <div class="col-md-2">Size:</div>
+                        <div class="col-md-3">
+                            @Html.DropDownList("feetHeight", Enumerable.Range(3, 4).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
+(Model.player.Height == 0 ? "Feet" : ((int)(Model.player.Height / 12)).ToString()),
+new { @class = "form-contol", @style = "padding:8px 20px 8px 20px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.DropDownList("inchesHeight", Enumerable.Range(0, 12).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
+(Model.player.Height == 0 ? "Inches" : (Model.player.Height % 12).ToString()),
+new { @class = "form-contol", @style = "padding:8px 20px 8px 20px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+
+                        </div>
+                        <div class="col-md-3">
+                            @Html.DropDownList("lbWeight", Enumerable.Range(1, 60).Select(i => new SelectListItem { Value = (i * 5).ToString(), Text = (i * 5).ToString() }),
+(Model.player.Weight == 0 ? "Weight" : (Model.player.Weight).ToString()),
+new { @class = "form-contol", @style = "padding:8px 20px 8px 20px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+
+                        </div>
+                    </div>
+                    <div class="form-row" style="padding:30px 0 60px 0;">
+                        <div class="col-md-2">
+                            <h5>Gender:</h5>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="input-group">
+
+                                @Html.DropDownList("gender", new List<SelectListItem>() {
+                                            new SelectListItem { Text="Blank", Value="Blank" },
+                                            new SelectListItem { Text = "Male", Value = "Male" },
+                                            new SelectListItem { Text = "Female", Value = "Female" } }, (Model.player.Gender),
+                    new { @class = "form-contol", @style = "padding:8px 20px 8px 20px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row text-center"><button class="btn btn-primary" type="submit">Save Changes</button></div>
+
+                }
+            }
+            else
+            {
+                <div class="container">
+                    <div class="row text-center">
+                        <img style="border-radius: 50%;width:75px; height:auto;" src="@(Model.player.ProfileImage != null ? Html.Raw(Model.player.ProfileImage) : (Model.player.Gender == "Male" ? Html.Raw("/Graphics/male_avatar.png") : (Model.player.Gender == "Female" ? Html.Raw("/Graphics/female_avatar.png") : Html.Raw("/Graphics/default_avatar.png"))))" alt="User Profile Image" />
+                    </div>
+                    <div class="row text-center">
+                        <div class="col-md-6">
+                            <h3>@Model.player.FirstName</h3>
+                        </div>
+                        <div class="col-md-6">
+                            <h3>@Model.player.LastName</h3>
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        @{
+                            DateTime now = DateTime.Today;
+                            int age = 0;
+                            if (Model.player.BirthDate.HasValue)
+                            {
+                                age = now.Year - Model.player.BirthDate.Value.Year;
+                                if (now < Model.player.BirthDate.Value.AddYears(age))
+                                { age--; }
+                            }
+                        }
+                        @if (Model.player.BirthDate.HasValue)
+                        {
+                            <div class="col-md-6">
+                                <h3>Age: @age</h3>
+                            </div>
+                        }
+                        <div class="col-md-6">
+                            <h3>Gender: @Model.player.Gender</h3>
+                        </div>
+                    </div>
+                    <div class="row text-center">
+                        @if (Model.player.Height != 0)
+                        {
+                            <div class="col-md-4">
+                                <h3>@((int)(Model.player.Height / 12)) Feet</h3>
+                            </div>
+                            <div class="col-md-4">
+                                <h3>@((int)(Model.player.Height % 12)) Inches</h3>
+                            </div>
+                        }
+                        @if (Model.player.Weight != 0)
+                        {
+                            <div class="col-md-4">
+                                <h3>@Model.player.Weight lb</h3>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+
+        </div>
+        <div class="col-md-6">
+            <h2>Teams</h2>
+            <hr />
+            <div class="container" style="padding-bottom:30px;">
+                <div class="row">
+                    <div class="col-md-3">
+                        <button type="button" data-toggle="modal" data-target="#createTeamModal" style="background-color:transparent; border:0px;"><img style="width:20px;height:auto;" src="~/Graphics/add.png" />Create Team</button>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" data-toggle="modal" data-target="#joinTeamModal" style="background-color:transparent; border:0px;"><img style="width:20px;height:auto;" src="~/Graphics/join.png" />Join Team</button>
+                    </div>
+                    <div class="col-md-6"></div>
+                </div>
+            </div>
+            <div class="container">
+                @foreach (Team team in Model.teams)
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            @using (Html.BeginForm("Team", "Dashboard", FormMethod.Get))
+                            {
+                                <button name="btn" value="@team.TeamID" type="submit" style="width:80%; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                    <span style="font-size:15px;">@team.TeamName</span> <span style="vertical-align:bottom">@team.Wins - @team.Losses</span> <i class="fa fa-angle-right" style="float:right;padding-right:5px;"></i>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+                @if (Model.teams.Count == 0)
+                {
+                    <p>You currently are not part of any teams. Create or join a team by clicking above.</p>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createTeamModal" tabindex="-1" role="dialog" aria-labelledby="createTeamModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createTeamModalLabel">Create Team</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("CreateTeam", "Dashboard", FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <div class="input-group">
+                        <div class="input-group-addon" style="border:0px;">
+                            <div class="input-group-text"><i class="fa fa-address-card-o"></i></div>
+                        </div>
+                        @Html.TextBoxFor(m => m.newTeamName, new { @class = "form-control", @placeholder = "Team Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="joinTeamModal" tabindex="-1" role="dialog" aria-labelledby="joinTeamModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="joinTeamModalLabel">Create Team</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("JoinTeam", "Dashboard", FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <div class="input-group">
+                        <div class="input-group-addon" style="border:0px;">
+                            <div class="input-group-text"><i class="glyphicon glyphicon-ok"></i></div>
+                        </div>
+                        @Html.TextBoxFor(m => m.joinTeamID, new { @class = "form-control", @placeholder = "Private Team Number", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+

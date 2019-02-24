@@ -199,7 +199,7 @@ namespace CourtFinder.Controllers
                 if (result.Succeeded)
                 {
                     var role = await UserManager.AddToRolesAsync(user.Id, new string[] { "Player" });
-                    Player player = new Player() { UserID = user.Id, FullName = (model.FirstName + " " + model.LastName)};
+                    Player player = new Player() { UserID = user.Id, FirstName = model.FirstName, LastName = model.LastName, Gender="Blank"};
                     db.Players.Add(player);
                     db.SaveChanges();
 

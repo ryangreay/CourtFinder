@@ -13,7 +13,10 @@ namespace CourtFinder.Models
 
     public class ProfileViewModel
     {
-        
+        public Player player { get; set; }
+        public List<Team> teams { get; set; }
+        public string newTeamName { get; set; }
+        public string joinTeamID { get; set; }
     }
 
     public class FacilityViewModel
@@ -21,5 +24,8 @@ namespace CourtFinder.Models
 
     }
 
-
+    public class TeamViewModel
+    {
+        public Team team { get; set; }
+    }
 }
