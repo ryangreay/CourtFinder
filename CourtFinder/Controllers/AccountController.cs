@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CourtFinder.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.IO;
 
 namespace CourtFinder.Controllers
 {
@@ -199,7 +200,7 @@ namespace CourtFinder.Controllers
                 if (result.Succeeded)
                 {
                     var role = await UserManager.AddToRolesAsync(user.Id, new string[] { "Player" });
-                    Player player = new Player() { UserID = user.Id, FirstName = model.FirstName, LastName = model.LastName, Gender="Blank"};
+                    Player player = new Player() { UserID = user.Id, FirstName = model.FirstName, LastName = model.LastName, Gender="Blank", ProfileImage = "/Graphics/default_avatar.png"};
                     db.Players.Add(player);
                     db.SaveChanges();
 

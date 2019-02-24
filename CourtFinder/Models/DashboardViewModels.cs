@@ -15,6 +15,7 @@ namespace CourtFinder.Models
     {
         public Player player { get; set; }
         public List<Team> teams { get; set; }
+        public HttpPostedFileBase profilePhoto { get; set; }
         public string newTeamName { get; set; }
         public string joinTeamID { get; set; }
     }
@@ -28,4 +29,10 @@ namespace CourtFinder.Models
     {
         public Team team { get; set; }
     }
+
+    public class GameViewModel
+    {
+        public Game game { get; set; }
+    }
+
 }

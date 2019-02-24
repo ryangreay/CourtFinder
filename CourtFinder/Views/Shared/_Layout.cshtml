@@ -36,5 +36,32 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script type="text/javascript">
+    $(function() {
+
+          // We can attach the `fileselect` event to all file inputs on the page
+          $(document).on('change', ':file', function() {
+            var input = $(this),
+                numFiles = 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+          });
+
+          // We can watch for our custom `fileselect` event like this
+          $(document).ready( function() {
+              $(':file').on('fileselect', function(event, numFiles, label) {
+
+                  var input = $(this).parents('.input-group').find(':text'),
+                      log = label;
+
+                  if( input.length ) {
+                      input.val(log);
+                  }
+
+              });
+          });
+
+        });
+    </script>
 </body>
 </html>

@@ -19,9 +19,9 @@ namespace CourtFinder.Migrations
 
             //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
             //  to avoid creating duplicate seed data.
-            //context.Roles.AddOrUpdate(new IdentityRole { Name = "Player" });
-            //context.Roles.AddOrUpdate(new IdentityRole { Name = "FacilityManager" });
-            //context.SaveChanges();
+            context.Roles.AddOrUpdate(new IdentityRole { Name = "Player" });
+            context.Roles.AddOrUpdate(new IdentityRole { Name = "FacilityManager" });
+            context.SaveChanges();
         }
     }
 }

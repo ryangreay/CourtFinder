@@ -5,52 +5,83 @@
     ViewBag.Title = "Team";
     string userid = User.Identity.GetUserId();
 }
-
-@if (Model.team.Players.Any(val => val.UserID == userid))
-{
-    using (Html.BeginForm("UpdateTeamName", "Dashboard", FormMethod.Post, new { @class = "form" }))
-    {
-        <div class="form-row" style="padding:30px 0 30px 0;">
-            <div class="col-md-12">
-                <div class="input-group">
-                    <div class="input-group-addon" style="border:0px;">
-                        <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
+<div class="container">
+    <div class="col-md-4 text-center">
+        @if (Model.team.Players.Any(val => val.UserID == userid))
+        {
+            using (Html.BeginForm("UpdateTeamName", "Dashboard", FormMethod.Post, new { @class = "form" }))
+            {
+                <div class="form-row" style="padding:30px 0 30px 0;">
+                    <div class="col-md-12">
+                        <div class="input-group">
+                            <div class="input-group-addon" style="border:0px;">
+                                <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
+                            </div>
+                            @Html.TextBoxFor(m => m.team.TeamName, new { @class = "form-control", @placeholder = "Team Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            @Html.ValidationMessageFor(m => m.team.TeamName, "", new { @class = "text-danger" })
+                            <div class="input-group-addon" style="padding:0px;border:0px;">
+                                <button class="btn btn-primary" type="submit">Save</button>
+                            </div>
+                            
+                        </div>
                     </div>
-                    @Html.TextBoxFor(m => m.team.TeamName, new { @class = "form-control", @placeholder = "Team Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                    @Html.ValidationMessageFor(m => m.team.TeamName, "", new { @class = "text-danger" })
                 </div>
-            </div>
+                <div class="form-row text-center"></div>
+            }
+            <h3>Team ID: @Model.team.PrivateTeamID</h3>
+            <h6>(Other users join your team with this)</h6>
+        }
+        else
+        {
+            <h2> @Model.team.TeamName </h2>
+        }
+        <h4>W/L Record: @Model.team.Wins - @Model.team.Losses</h4>
+        <h4 style="@(Model.team.Standing > 0.75 ? Html.Raw("color:green;") : (Model.team.Standing > 0.50 ? Html.Raw("color:lightgreen") : (Model.team.Standing > 0.25 ? Html.Raw("color:#ffd800") : Html.Raw("color:red"))))">Reputation: @Model.team.Standing</h4>
+
+    </div>
+    <div class="col-md-4">
+        <h2>Members</h2>
+        <hr />
+        <div style="height:300px;width:auto;overflow-y:auto;">
+            @foreach (Player player in Model.team.Players)
+            {
+                using (Html.BeginForm("UserProfile", "Dashboard", FormMethod.Get))
+                {
+                    <button name="playerID" value="@player.PlayerID" type="submit" style="padding:10px; width:100%;height:20%; background-color:white; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                        <img style="border-radius: 50%; width:40px; height:auto; float:left;" src="@Html.Raw(player.ProfileImage)" />
+                        <p>@player.FirstName @player.LastName</p>
+                        <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                    </button>
+                }
+                
+            }
         </div>
-        <div class="form-row text-center"><button class="btn btn-primary" type="submit">Save</button></div>
-    }
-    <h2>@Model.team.PrivateTeamID</h2>
-    <h6>(Other users join your team with this)</h6>
-}
-else
-{
-    <h2> @Model.team.TeamName </h2>
-}
-<h4>@Model.team.Wins - @Model.team.Losses</h4>
-<h4 style="@(Model.team.Standing > 0.75 ? Html.Raw("color:green;") : (Model.team.Standing > 0.50 ? Html.Raw("color:lightgreen") : (Model.team.Standing > 0.25 ? Html.Raw("color:#ffd800") : Html.Raw("color:red"))))">@Model.team.Standing</h4>
-<hr />
-<h2>Members</h2>
-<hr />
-@foreach (Player player in Model.team.Players)
-{
-    <button type="submit">
-        <img style="border-radius: 50%; width:75px; height:auto;" src="@Html.Raw(player.ProfileImage)" />
-        @player.FirstName @player.LastName
-    </button> 
-}
-<h2>Upcoming</h2>
-<hr />
-@foreach (Game game in Model.team.Games)
-{
-    <button type="submit">
-        @game.GameStart @game.Teams.Where(val => val.TeamID != Model.team.TeamID).Select(val => val.TeamName)
-    </button>
-}
-@if (Model.team.Games.Count == 0)
-{
-    <p> There are no upcoming games. Join a nearby league to schedule games.</p>
-}
+        
+    </div>
+    <div class="col-md-4" >
+        <h2>Upcoming</h2>
+        <hr />
+        <div style="height:300px;width:auto;overflow-y:auto;">
+            @if (Model.team.Games == null || Model.team.Games.Count == 0)
+            {
+                <p> There are no upcoming games. Join a nearby league to schedule games.</p>
+            }
+            else
+            {
+                foreach (Game game in Model.team.Games)
+                {
+                    using (Html.BeginForm("Game", "Dashboard", FormMethod.Get))
+                    {
+                <button name="gameID" value="@game.GameID" type="submit" style="width:100%;height:20%; background-color:white; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                    @game.GameStart @game.Teams.Where(val => val.TeamID != Model.team.TeamID).Select(val => val.TeamName)
+                    <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                </button>
+                    }
+                }
+            }
+        </div>
+        
+    </div>
+</div>
+
+

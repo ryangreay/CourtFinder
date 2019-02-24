@@ -26,11 +26,21 @@ namespace CourtFinder.Controllers
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public ActionResult UserProfile()
+        public ActionResult UserProfile(string playerID)
         {
-            string userid = User.Identity.GetUserId();
             ProfileViewModel model = new ProfileViewModel();
-            Player player = db.Players.Where(val => val.UserID == userid).FirstOrDefault();
+            Player player;
+            if (playerID == null || playerID == "")
+            {
+                string userid = User.Identity.GetUserId();
+                player = db.Players.Where(val => val.UserID == userid).FirstOrDefault();               
+            }
+            else
+            {
+                int intPlayerID = int.Parse(playerID);
+                player = db.Players.Where(val => val.PlayerID == intPlayerID).FirstOrDefault();
+            }
+            
             List<int> teamids = db.Teams.Where(val => val.Players.Select(p => p.PlayerID).Contains(player.PlayerID)).Select(val => val.TeamID).ToList();
             List<Team> teams = db.Teams.Where(val => teamids.Contains(val.TeamID)).ToList();
             model.player = player;
@@ -44,14 +54,29 @@ namespace CourtFinder.Controllers
         {
             string userid = User.Identity.GetUserId();
             Player player = db.Players.Where(val => val.UserID == userid).FirstOrDefault();
+            if (model.profilePhoto != null)
+            {
+                string pic = System.IO.Path.GetFileName(model.profilePhoto.FileName);
+                string path = System.IO.Path.Combine(Server.MapPath("~/images/profile"), pic);
+                model.profilePhoto.SaveAs(path);
+                player.ProfileImage = "/images/profile/" + pic;
+            }
             player.FirstName = model.player.FirstName;
             player.LastName = model.player.LastName;
-            player.BirthDate = DateTime.ParseExact(month + "/" + day + "/" + year, "MMM/dd/yyyy", CultureInfo.InvariantCulture);
-            player.Height = (int.Parse(feetHeight) * 12) + int.Parse(inchesHeight);
-            player.Weight = int.Parse(lbWeight);
-            player.Gender = gender;
+            if (month != "" && day != "" && year != "")
+                player.BirthDate = DateTime.Parse(month + "/" + day + "/" + year);
+            if (feetHeight != "" && inchesHeight != "")
+                player.Height = (int.Parse(feetHeight) * 12) + int.Parse(inchesHeight);
+            if (lbWeight != "")
+                player.Weight = int.Parse(lbWeight);
+            if (gender != "")
+                player.Gender = gender;
+            if (player.Gender == "Male" && player.ProfileImage == "/Graphics/default_avatar.png")
+                player.ProfileImage = "/Graphics/male_avatar.png";
+            else if (player.Gender == "Female" && player.ProfileImage == "/Graphics/default_avatar.png")
+                player.ProfileImage = "/Graphics/female_avatar.png";
             db.SaveChanges();
-            return View("UserProfile", model);
+            return RedirectToAction("UserProfile", "Dashboard");
         }
 
         [HttpPost]
@@ -70,6 +95,8 @@ namespace CourtFinder.Controllers
             db.Teams.Add(team);
             db.SaveChanges();
 
+            model.player = me;
+            model.teams = me.Teams.ToList();
             return View("UserProfile", model);
         }
 
@@ -81,32 +108,22 @@ namespace CourtFinder.Controllers
             Team team = db.Teams.Where(val => val.PrivateTeamID == model.joinTeamID).FirstOrDefault();
             team.Players.Add(me);
             db.SaveChanges();
+            model.player = me;
+            model.teams = me.Teams.ToList();
             return View("UserProfile", model);
-        }
-
-        [HttpPost]
-        public ActionResult FileUpload(HttpPostedFileBase file)
-        {
-            if (file != null)
-            {
-                string pic = System.IO.Path.GetFileName(file.FileName);
-                string path = System.IO.Path.Combine(Server.MapPath("~/images/profile"), pic);
-                file.SaveAs(path);
-                string userid = User.Identity.GetUserId();
-                Player me = db.Players.Where(val => val.UserID == userid).FirstOrDefault();
-                me.ProfileImage = "/images/profile/" + pic;
-                db.SaveChanges();
-
-            }
-            return RedirectToAction("UserProfile", "Dashboard");
-        }        
+        }       
 
         [HttpGet]
         public ActionResult Team(string teamID)
         {
-            Team team = db.Teams.Where(val => val.TeamID == int.Parse(teamID)).FirstOrDefault();
             TeamViewModel model = new TeamViewModel();
-            model.team = team;
+            if (teamID != null)
+            {
+                int intTeamID = int.Parse(teamID);
+                Team team = db.Teams.Where(val => val.TeamID == intTeamID).FirstOrDefault();
+                
+                model.team = team;
+            }
             return View(model);
         }
 
@@ -140,5 +157,12 @@ namespace CourtFinder.Controllers
         {
             return View(model);
         }
+
+        [HttpGet]
+        public ActionResult Game(string gameID)
+        {
+            return View();
+        }
+
     }
 }

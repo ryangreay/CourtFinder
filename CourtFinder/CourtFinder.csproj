@@ -201,33 +201,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201902070027586_Initial.cs" />
-    <Compile Include="Migrations\201902070027586_Initial.Designer.cs">
-      <DependentUpon>201902070027586_Initial.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902140057288_Facilityintegration.cs" />
-    <Compile Include="Migrations\201902140057288_Facilityintegration.Designer.cs">
-      <DependentUpon>201902140057288_Facilityintegration.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902221937118_facilitymanager-change.cs" />
-    <Compile Include="Migrations\201902221937118_facilitymanager-change.Designer.cs">
-      <DependentUpon>201902221937118_facilitymanager-change.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902230138457_allow nulls on player bdate.cs" />
-    <Compile Include="Migrations\201902230138457_allow nulls on player bdate.Designer.cs">
-      <DependentUpon>201902230138457_allow nulls on player bdate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902231856599_added profile image field to player.cs" />
-    <Compile Include="Migrations\201902231856599_added profile image field to player.Designer.cs">
-      <DependentUpon>201902231856599_added profile image field to player.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902231900120_edited profile img field.cs" />
-    <Compile Include="Migrations\201902231900120_edited profile img field.Designer.cs">
-      <DependentUpon>201902231900120_edited profile img field.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902231906051_split player fullname to first last fields.cs" />
-    <Compile Include="Migrations\201902231906051_split player fullname to first last fields.Designer.cs">
-      <DependentUpon>201902231906051_split player fullname to first last fields.cs</DependentUpon>
+    <Compile Include="Migrations\201902241936204_Initial.cs" />
+    <Compile Include="Migrations\201902241936204_Initial.Designer.cs">
+      <DependentUpon>201902241936204_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -324,6 +300,7 @@
     <Content Include="Views\Account\Facilities.cshtml" />
     <Content Include="Views\Dashboard\Facility.cshtml" />
     <Content Include="Views\Dashboard\Team.cshtml" />
+    <Content Include="Views\Dashboard\Game.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -343,26 +320,8 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201902070027586_Initial.resx">
-      <DependentUpon>201902070027586_Initial.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902140057288_Facilityintegration.resx">
-      <DependentUpon>201902140057288_Facilityintegration.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902221937118_facilitymanager-change.resx">
-      <DependentUpon>201902221937118_facilitymanager-change.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902230138457_allow nulls on player bdate.resx">
-      <DependentUpon>201902230138457_allow nulls on player bdate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902231856599_added profile image field to player.resx">
-      <DependentUpon>201902231856599_added profile image field to player.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902231900120_edited profile img field.resx">
-      <DependentUpon>201902231900120_edited profile img field.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902231906051_split player fullname to first last fields.resx">
-      <DependentUpon>201902231906051_split player fullname to first last fields.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201902241936204_Initial.resx">
+      <DependentUpon>201902241936204_Initial.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
