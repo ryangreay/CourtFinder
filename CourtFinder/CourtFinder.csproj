@@ -48,6 +48,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Device">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -205,6 +208,30 @@
     <Compile Include="Migrations\201902241936204_Initial.Designer.cs">
       <DependentUpon>201902241936204_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902250104244_added address field to facility.cs" />
+    <Compile Include="Migrations\201902250104244_added address field to facility.Designer.cs">
+      <DependentUpon>201902250104244_added address field to facility.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902251810519_changed facility lat long to double.cs" />
+    <Compile Include="Migrations\201902251810519_changed facility lat long to double.Designer.cs">
+      <DependentUpon>201902251810519_changed facility lat long to double.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902251837405_added sports list to facility.cs" />
+    <Compile Include="Migrations\201902251837405_added sports list to facility.Designer.cs">
+      <DependentUpon>201902251837405_added sports list to facility.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902252228181_facility manager points to one facility.cs" />
+    <Compile Include="Migrations\201902252228181_facility manager points to one facility.Designer.cs">
+      <DependentUpon>201902252228181_facility manager points to one facility.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902261905366_added lat long to player.cs" />
+    <Compile Include="Migrations\201902261905366_added lat long to player.Designer.cs">
+      <DependentUpon>201902261905366_added lat long to player.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201902261941228_added lat long to facility manager.cs" />
+    <Compile Include="Migrations\201902261941228_added lat long to facility manager.Designer.cs">
+      <DependentUpon>201902261941228_added lat long to facility manager.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bracket.cs" />
@@ -322,6 +349,24 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201902241936204_Initial.resx">
       <DependentUpon>201902241936204_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902250104244_added address field to facility.resx">
+      <DependentUpon>201902250104244_added address field to facility.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902251810519_changed facility lat long to double.resx">
+      <DependentUpon>201902251810519_changed facility lat long to double.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902251837405_added sports list to facility.resx">
+      <DependentUpon>201902251837405_added sports list to facility.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902252228181_facility manager points to one facility.resx">
+      <DependentUpon>201902252228181_facility manager points to one facility.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902261905366_added lat long to player.resx">
+      <DependentUpon>201902261905366_added lat long to player.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902261941228_added lat long to facility manager.resx">
+      <DependentUpon>201902261941228_added lat long to facility manager.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

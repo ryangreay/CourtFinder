@@ -7,6 +7,37 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA95tVvipo5CN8GMr347c19CRrKokYWymE&callback=markIcons" async defer></script>
+    <script type="text/javascript">
+        $(function () {
+
+            // We can attach the `fileselect` event to all file inputs on the page
+            $(document).on('change', ':file', function () {
+                var input = $(this),
+                    numFiles = 1,
+                    label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [numFiles, label]);
+            });
+
+            // We can watch for our custom `fileselect` event like this
+            $(document).ready(function () {
+                $(':file').on('fileselect', function (event, numFiles, label) {
+
+                    var input = $(this).parents('.input-group').find(':text'),
+                        log = label;
+
+                    if (input.length) {
+                        input.val(log);
+                    }
+
+                });
+            });
+
+        });
+    </script>
 
 </head>
 <body>
@@ -33,35 +64,6 @@
         </footer>
     </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
-    <script type="text/javascript">
-    $(function() {
-
-          // We can attach the `fileselect` event to all file inputs on the page
-          $(document).on('change', ':file', function() {
-            var input = $(this),
-                numFiles = 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-            input.trigger('fileselect', [numFiles, label]);
-          });
-
-          // We can watch for our custom `fileselect` event like this
-          $(document).ready( function() {
-              $(':file').on('fileselect', function(event, numFiles, label) {
-
-                  var input = $(this).parents('.input-group').find(':text'),
-                      log = label;
-
-                  if( input.length ) {
-                      input.val(log);
-                  }
-
-              });
-          });
-
-        });
-    </script>
+    
 </body>
 </html>

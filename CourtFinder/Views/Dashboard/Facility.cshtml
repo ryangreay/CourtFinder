@@ -1,7 +1,90 @@
-﻿
+﻿@using Microsoft.AspNet.Identity
+@using CourtFinder.Models
+@model CourtFinder.Models.FacilityViewModel
 @{
     ViewBag.Title = "Facility";
+    List<string> states = new List<string> { "AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS",
+"KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD",
+"TN","TX","UT","VT","VA","WA","WV","WI","WY" };
 }
 
-<h2>Facility</h2>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Facility</h2>
+            <hr />
+            @if (User.Identity.GetUserId() != Model.facility.FacilityManager.UserID)
+            {
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 text-center">
+                            <h3>@Model.facility.FacilityName</h3>
+                            <h4>Address: @(Model.facility.Address == "" || Model.facility.Address == null ? "Blank" : Model.facility.Address)</h4>
+                            <h4>
+                                Facility Sports:
+                                @{ 
+                                    string s = "";
+                                    if (Model.facility.Sports == null || Model.facility.Sports.Count == 0)
+                                    {
+                                        s = "None at this moment, please check back later.:";
+                                    }
+                                    else
+                                    {
+                                        s = "";
+                                        foreach (Sport sport in Model.facility.Sports)
+                                        {
+                                            s += @sport.Description + ", ";
+                                        }
+                                        s = s.TrimEnd(", ".ToCharArray());
+                                    }
+                                }
+                                @s
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                using (Html.BeginForm("Facility", "Dashboard", new { facilityID = Model.facility.FacilityID }, FormMethod.Post, new { @class = "form" }))
+                {
+                    <div class="form-row" style="padding-bottom:30px;">
+                        <div class="input-group">
+                            <div class="input-group-addon" style="border:0px;">
+                                <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
+                            </div>
+                            @Html.TextBoxFor(m => m.facility.FacilityName, new { @class = "form-control", @placeholder = "Facility Title", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            @Html.ValidationMessageFor(m => m.facility.FacilityName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-row" style="padding-bottom:30px;">
+                        <div class="col-md-5">
+                            @Html.TextBoxFor(m => m.address, new { @class = "form-control", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)", @placeholder="Address" })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.DropDownList("state", states.AsEnumerable().Select(i => new SelectListItem { Value = i, Text = i }),
+                                     (Model.state == null || Model.state == "" ? "State" : Model.state),
+                                     new { @class = "custom-select form-control", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.zipCode, new { @class = "form-control", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)", @placeholder="Zip Code" })
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        @Html.ListBoxFor(m => m.facilitySports, Model.sports.Select(i => 
+                            new SelectListItem { Value = i, Text = i, Selected = Model.facility.Sports.Any(val => val.Description == i) }) @*new MultiSelectList(Model.sports, "Description", "Description")*@,
+                       new {Multiple = "Multiple", @class="form-control", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                    <div class="form-row text-center">
+                        <button class="btn btn-primary" type="submit">Save</button>
+                    </div>
+                }
+            }
 
+        </div>
+        <div class="col-md-6">
+            <h2>Leagues</h2>
+            <hr />
+        </div>
+    </div>
+</div>

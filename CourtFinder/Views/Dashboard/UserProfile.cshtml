@@ -204,7 +204,7 @@ new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-s
                             <div class="col" style="padding:10px;">
                                 @using (Html.BeginForm("Team", "Dashboard", FormMethod.Get))
                                 {
-                                    <button name="teamID" value="@team.TeamID" type="submit" style="width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                    <button name="teamID" value="@team.TeamID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
                                         <p style="font-size:15px;padding-top:5px;">@team.TeamName</p> <p style="vertical-align:bottom">@team.Wins - @team.Losses</p> <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
                                     </button>
                                 }

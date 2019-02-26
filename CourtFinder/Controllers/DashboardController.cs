@@ -10,6 +10,11 @@ using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.IO;
 using System.Globalization;
+using System.Device;
+using System.Device.Location;
+using System.Net;
+using System.Configuration;
+using System.Xml.Linq;
 
 namespace CourtFinder.Controllers
 {
@@ -24,6 +29,28 @@ namespace CourtFinder.Controllers
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
+        }
+
+        public static GeoCoordinate GetCoordinates(string address)
+        {
+            var requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?address={0}&key=AIzaSyDccK65hnsCsuS5VmBDWaWo6BQoBwgcH78", Uri.EscapeDataString(address));
+
+            var request = WebRequest.Create(requestUri);
+            var response = request.GetResponse();
+            var xdoc = XDocument.Load(response.GetResponseStream());
+
+            var result = xdoc.Element("GeocodeResponse").Element("result");
+            var locationElement = result.Element("geometry").Element("location");
+            var lat = locationElement.Element("lat").Value;
+            var lng = locationElement.Element("lng").Value;
+            return new GeoCoordinate(Convert.ToDouble(lat), Convert.ToDouble(lng));
+            //using (var client = new WebClient())
+            //{
+            //    string uri = "http://maps.google.com/maps/geo?q='" + region +
+            //      "'&output=csv&key=" + ConfigurationManager.AppSettings["GoogleMapAPI"];
+            //    string[] geocodeInfo = client.DownloadString(uri).Split(',');
+            //    return new GeoCoordinate(Convert.ToDouble(geocodeInfo[2]), Convert.ToDouble(geocodeInfo[3]));
+            //}
         }
 
         public ActionResult UserProfile(string playerID)
@@ -133,28 +160,116 @@ namespace CourtFinder.Controllers
             Team team = db.Teams.Where(val => val.TeamID == model.team.TeamID).FirstOrDefault();
             team.TeamName = model.team.TeamName;
             db.SaveChanges();
+            model.team = team;
             return View(model);
         }
 
+        [HttpGet]
         public ActionResult Search()
         {
-            return View();
+            string userid = User.Identity.GetUserId();
+            Player player = db.Players.Where(val => val.UserID == userid).FirstOrDefault();
+            FacilityManager manager = db.FacilityManagers.Where(val => val.UserID == userid).FirstOrDefault();
+            SearchViewModel model = new SearchViewModel();
+            //get all facilities within default 10 mile radius from my location
+            model.sports = db.Sports.ToList();
+            model.Distance = 10;
+            model.sport = null;
+            List<Facility> facilities = new List<Facility>();
+            if ((player != null && player.Latitude != 0) || (manager != null && manager.Latitude != 0))
+            {
+                GeoCoordinate coord = new GeoCoordinate(Convert.ToDouble(player != null ? player.Latitude : manager.Latitude),
+                                                        Convert.ToDouble(player != null ? player.Longitude : manager.Longitude));
+                facilities = db.Facility.AsEnumerable()
+                    .Where(val => new GeoCoordinate(val.Latitude, val.Longitude).GetDistanceTo(coord) < (model.Distance * 1609.344)).ToList();
+            }
+
+            model.facilities = facilities;
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult Search(SearchViewModel model)
+        public ActionResult Search(SearchViewModel model, string distance, string sport, string lat, string lon)
         {
-            return View();
+            if (distance != null && distance != "")
+                model.Distance = int.Parse(distance);
+            else
+                model.Distance = 10;
+
+            if (sport != null && sport != "" && sport != "Sport")
+                model.sport = db.Sports.Where(val => val.Description == sport).FirstOrDefault();
+
+            model.sports = db.Sports.ToList();
+            //get all facilities with distance mile radius and supporting sport.
+            //if facility does not have lat long set then dont add it to the list
+            List<Facility> facilities = new List<Facility>();
+            if (lat != null && lat != "" && lon != null && lon != "")
+            {
+                GeoCoordinate coord = new GeoCoordinate(Convert.ToDouble(lat), Convert.ToDouble(lon));
+                facilities = db.Facility.AsEnumerable()
+                    .Where(val => new GeoCoordinate(val.Latitude, val.Longitude).GetDistanceTo(coord) < (model.Distance * 1609.344)).ToList();
+                facilities = facilities.Where(val => 
+                    (model.sport != null && val.Sports.Select(s => s.SportID).Contains(model.sport.SportID)) ||
+                    (model.sport == null)).ToList();
+            }
+
+            model.facilities = facilities;
+
+            return View(model);
         }  
 
-        public ActionResult Facility()
+        [HttpGet]
+        public ActionResult Facility(string facilityID)
         {
-            return View();
+            int intFacilityID = 0;
+            string userid = User.Identity.GetUserId();
+            FacilityViewModel model = new FacilityViewModel();
+            if (facilityID != null && facilityID != "")
+            {
+                intFacilityID = int.Parse(facilityID);
+                model.facility = db.Facility.Where(val => val.FacilityID == intFacilityID).FirstOrDefault();
+            }
+            else
+            {
+                model.facility = db.Facility.Where(val => val.FacilityManager.UserID == userid).FirstOrDefault();
+            }
+
+            if (model.facility.Address != null)
+            {
+                model.address = model.facility.Address.Split(',')[0];
+                model.state = model.facility.Address.Split(',')[1];
+                model.zipCode = model.facility.Address.Split(',')[2];
+            }
+            model.facilitySports = model.facility.Sports.Select(val => val.Description).ToList();
+            model.sports = db.Sports.Select(val => val.Description).ToList();
+            return View(model);
         }
 
         [HttpPost]
-        public ActionResult Facility(FacilityViewModel model)
+        public ActionResult Facility(FacilityViewModel model, string state, string facilityID)
         {
+            int intFacilityID = int.Parse(facilityID);
+            Facility me = db.Facility.Where(val => val.FacilityID == intFacilityID).FirstOrDefault();
+            if (model.address != "" && model.address != null &&
+                model.zipCode != "" && model.zipCode != null &&
+                state != "" && state != null)
+            {
+                string address = model.address + ", " + state + ", " + model.zipCode;
+                GeoCoordinate coords = GetCoordinates(address);
+                me.Latitude = coords.Latitude;
+                me.Longitude = coords.Longitude;
+                me.Address = address;
+            }
+            if (model.facilitySports != null)
+            {
+                me.Sports.Clear();
+                me.Sports = db.Sports.Where(val => model.facilitySports.Contains(val.Description)).ToList();
+            }
+            me.FacilityName = model.facility.FacilityName;
+            model.facility = me;
+            model.sports = db.Sports.Select(val => val.Description).ToList();
+
+            db.SaveChanges();
             return View(model);
         }
 

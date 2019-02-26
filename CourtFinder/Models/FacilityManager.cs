@@ -11,15 +11,12 @@ namespace CourtFinder.Models
 
     public class FacilityManager
     {
-        public FacilityManager()
-        {
-            this.Facilities = new HashSet<Facility>();
-        }
         public int FacilityManagerID { get; set; }
         public string UserID { get; set; }
         [ForeignKey("UserID")]
         public ApplicationUser User { get; set; }
-        public byte[] ProfileImage { get; set; }
-        public virtual ICollection<Facility> Facilities { get; set; }
+        public string ProfileImage { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
     }
 }

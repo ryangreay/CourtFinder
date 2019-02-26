@@ -3,6 +3,15 @@
 @{
     ViewBag.Title = "Log in";
 }
+<script type="text/javascript">
+    function showPosition(position) {
+        var coords = position.coords;
+        $("#lat").val(coords.latitude);
+        $("#lon").val(coords.longitude);
+    }
+    navigator.geolocation.getCurrentPosition(showPosition);
+</script>
+
 
 <h2 style="text-align:center;">@ViewBag.Title.</h2>
 <div class="container">
@@ -36,7 +45,7 @@
                                     <div class="input-group-addon" style="border:0px;">
                                         <div class="input-group-text"><i class="glyphicon glyphicon-lock"></i></div>
                                     </div>
-                                    @Html.TextBoxFor(m => m.Password, new {@type = "password", @class = "form-control", @placeholder = "Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                    @Html.TextBoxFor(m => m.Password, new { @type = "password", @class = "form-control", @placeholder = "Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                                     @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -51,13 +60,14 @@
                                 </div>
                             </div>
                         </div>
-                    
+                        <input type="text" name="lat" id="lat" style="display:none;" />
+                        <input type="text" name="lon" id="lon" style="display:none;" />
                         <div class="form-group">
                             <div class="input-group-btn">
                                 <input type="submit" value="Log in" class="btn btn-primary" />
                             </div>
                         </div>
-                        <p> @Html.ActionLink("Register as a new user", "Register")</p>                     
+                        <p> @Html.ActionLink("Register as a new user", "Register")</p>
                         <p>@Html.ActionLink("Forgot your password?", "ForgotPassword")</p>
                     }
                 </div>

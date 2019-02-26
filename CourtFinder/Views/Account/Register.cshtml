@@ -3,6 +3,14 @@
 @{
     ViewBag.Title = "Register";
 }
+<script type="text/javascript">
+    function showPosition(position) {
+        var coords = position.coords;
+        $("#lat").val(coords.latitude);
+        $("#lon").val(coords.longitude);
+    }
+    navigator.geolocation.getCurrentPosition(showPosition);
+</script>
 
 <h2 style="text-align:center;">@ViewBag.Title.</h2>
 <div class="container">
@@ -21,54 +29,55 @@
                     {
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                    <div class="col-md-offset-2">
-                        <div class="form-group text-center">
-                            <div class="input-group">
-                                <div class="input-group-addon" style="border:0px;">
-                                    <div class="input-group-text"><i class="glyphicon glyphicon-envelope"></i></div>
+                        <div class="col-md-offset-2">
+                            <div class="form-group text-center">
+                                <div class="input-group">
+                                    <div class="input-group-addon" style="border:0px;">
+                                        <div class="input-group-text"><i class="glyphicon glyphicon-envelope"></i></div>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02);" })
+                                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                                 </div>
-                                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Email", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02);" })
-                                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group text-center">
+                                <div class="input-group">
+                                    <div class="input-group-addon" style="border:0px;">
+                                        <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @placeholder = "First Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                    @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group text-center">
+                                <div class="input-group">
+                                    <div class="input-group-addon" style="border:0px;">
+                                        <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @placeholder = "Last Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                    @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group text-center">
+                                <div class="input-group">
+                                    <div class="input-group-addon" style="border:0px;">
+                                        <div class="input-group-text"><i class="glyphicon glyphicon-lock"></i></div>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.Password, new { @type = "password", @class = "form-control", @placeholder = "Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group text-center">
+                                <div class="input-group">
+                                    <div class="input-group-addon" style="border:0px;">
+                                        <div class="input-group-text"><i class="glyphicon glyphicon-lock"></i></div>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.ConfirmPassword, new { @type = "password", @class = "form-control", @placeholder = "Confirm Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                                </div>
                             </div>
                         </div>
-                        <div class="form-group text-center">
-                            <div class="input-group">
-                                <div class="input-group-addon" style="border:0px;">
-                                    <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
-                                </div>
-                                @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control", @placeholder = "First Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                                @Html.ValidationMessageFor(m => m.FirstName, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-                        <div class="form-group text-center">
-                            <div class="input-group">
-                                <div class="input-group-addon" style="border:0px;">
-                                    <div class="input-group-text"><i class="glyphicon glyphicon-user"></i></div>
-                                </div>
-                                @Html.TextBoxFor(m => m.LastName, new { @class = "form-control", @placeholder = "Last Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                                @Html.ValidationMessageFor(m => m.LastName, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-                        <div class="form-group text-center">
-                            <div class="input-group">
-                                <div class="input-group-addon" style="border:0px;">
-                                    <div class="input-group-text"><i class="glyphicon glyphicon-lock"></i></div>
-                                </div>
-                                @Html.TextBoxFor(m => m.Password, new { @type = "password", @class = "form-control", @placeholder = "Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-                        <div class="form-group text-center">
-                            <div class="input-group">
-                                <div class="input-group-addon" style="border:0px;">
-                                    <div class="input-group-text"><i class="glyphicon glyphicon-lock"></i></div>
-                                </div>
-                                @Html.TextBoxFor(m => m.ConfirmPassword, new { @type = "password", @class = "form-control", @placeholder = "Confirm Password", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-                    </div>
-
+                        <input type="text" name="lat" id="lat" style="display:none;" />
+                        <input type="text" name="lon" id="lon" style="display:none;" />
                         <div class="form-group">
                             <div class="input-group-btn">
                                 <input type="submit" value="Register" class="btn btn-primary" />

@@ -1,8 +1,129 @@
-﻿
+﻿@using CourtFinder.Models
+@model CourtFinder.Models.SearchViewModel
 @{
     ViewBag.Title = "Search";
 }
+<script type="text/javascript">
 
-<h2>Map with nearby facility pins</h2>
-<h2>List of pins on map</h2>
-<h2>List of favorited facilities</h2>
+    function showPosition(position) {
+        var coords = position.coords;
+        $("#lat").val(coords.latitude);
+        $("#lon").val(coords.longitude);
+        var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+
+        var myOptions = {
+            zoom: 10,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+
+        var map = new google.maps.Map(document.getElementById("map"), myOptions);
+        var marker;
+        var i = 0;
+        var infowindow;
+        @{ 
+            int count = 0;
+            foreach (Facility facility in Model.facilities)
+            {
+                <Text>
+                    i = @count;
+
+                    marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(@facility.Latitude, @facility.Longitude),
+                        map: map
+                    });
+
+                    (function (i, marker) {
+                        google.maps.event.addListener(marker, 'click', function () {
+                            if (!infowindow) {
+                                infowindow = new google.maps.InfoWindow();
+                            }
+                            infowindow.setContent("<a href='@Url.Action("Facility", "Dashboard", new { facilityID = facility.FacilityID })'>@facility.FacilityName</a><br />@facility.Address");
+                            infowindow.open(map, marker);
+                        });
+                    })(i, marker);
+
+
+                    @*infowindow = new google.maps.InfoWindow({
+                        content: "<a href='@Url.Action("Facility", "Dashboard", new { facilityID = facility.FacilityID })'>@facility.FacilityName</a><br />@facility.Address"
+                    });
+                    google.maps.event.addListener(marker, 'click', function () {
+                        infowindow.open(map, marker);
+                    });*@
+                </Text>
+                count++;
+            }
+         }
+                
+    }
+
+    function markicons() {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    }
+
+    window.onload = markicons;
+
+</script>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <h2>Nearby Facilities</h2>
+            <hr />
+            @if (Model.facilities == null || Model.facilities.Count == 0)
+            {
+                <p>There are no nearby facilities. Check back later!</p>
+            }
+            else
+            {
+                <div style="height:450px;overflow-y:auto;">
+                    @foreach (Facility facility in Model.facilities)
+                    {
+                        <div class="row">
+                            <div class="col" style="padding:10px;">
+                                @using (Html.BeginForm("Facility", "Dashboard", FormMethod.Get))
+                                {
+                                    <button name="facilityID" value="@facility.FacilityID" type="submit" style="border-radius:30px;width:90%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                        <p style="font-size:15px;padding-top:5px;">@facility.FacilityName, @facility.Courts.Count Courts</p>
+                                        <p style="vertical-align:bottom">@facility.Address</p>
+                                        <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                
+            }
+        </div>
+        <div class="col-md-6">
+            <h2>Map</h2>
+            <hr />
+            @using (Html.BeginForm("Search", "Dashboard", FormMethod.Post, new { @class = "form" }))
+            {
+                <div class="form-row">
+                    <div class="col-md-2">
+                        <p style="margin-top:5px;">Dist (mi):</p>
+                    </div>
+                    <div class="col-md-3">
+                        @Html.DropDownList("distance", Enumerable.Range(1, 8).Select(i => new SelectListItem { Value = (i * 5).ToString(), Text = (i * 5).ToString() }),
+                            (Model.Distance == 0 ? "5" : Model.Distance.ToString()),
+                            new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                    <div class="col-md-5">
+                        @Html.DropDownList("sport", Model.sports.Select(i => new SelectListItem { Value = i.Description, Text = i.Description }), (Model.sport == null ? "Sport" : Model.sport.Description),
+                       new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                    <input id="lat" name="lat" value="0" type="text" style="display:none;" />
+                    <input id="lon" name="lon" value="0" type="text" style="display:none;" />
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" type="submit">Set Map</button>
+                    </div>
+                </div>
+            }
+            <div id="spacer" style="height:50px"></div>
+            <div id="map" style="width:100%;height:400px;"></div>
+        </div>
+    </div>
+
+</div>
+

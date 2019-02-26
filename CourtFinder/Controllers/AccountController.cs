@@ -64,7 +64,7 @@ namespace CourtFinder.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Facilities(FacilitiesViewModel model)
+        public async Task<ActionResult> Facilities(FacilitiesViewModel model, string lat, string lon)
         {
             if (ModelState.IsValid)
             {
@@ -72,10 +72,14 @@ namespace CourtFinder.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    double latitude = Convert.ToDouble(lat);
+                    double longitude = Convert.ToDouble(lon);
                     await this.UserManager.AddToRolesAsync(user.Id, new string[] { "FacilityManager" });
-                    Facility facility = new Facility() { FacilityName = model.FacilityTitle };
-                    FacilityManager manager = new FacilityManager() { UserID = user.Id};
-                    db.FacilityManagers.Add(manager).Facilities.Add(facility);
+                    FacilityManager manager = new FacilityManager() { UserID = user.Id, Latitude = latitude, Longitude = longitude };
+                    Facility facility = new Facility() { FacilityName = model.FacilityTitle, FacilityManager = manager };
+                    db.FacilityManagers.Add(manager);
+                    db.Facility.Add(facility);                  
+                    //db.FacilityManagers.Add(manager).Facilitiy = facility;
                     db.SaveChanges();
 
                     await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
@@ -85,8 +89,7 @@ namespace CourtFinder.Controllers
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
                     // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
-                    return RedirectToAction("Facility", "Dashboard");
+                    return RedirectToAction("Facility", "Dashboard", new { facilityID = facility.FacilityID.ToString() });
                 }
                 AddErrors(result);
             }
@@ -109,7 +112,7 @@ namespace CourtFinder.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl, string lat, string lon)
         {
             if (!ModelState.IsValid)
             {
@@ -123,7 +126,26 @@ namespace CourtFinder.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    {
+                        string userid = SignInManager
+                            .AuthenticationManager.AuthenticationResponseGrant.Identity.GetUserId();
+                        //string userid = User.Identity.GetUserId();
+                        Player player = db.Players.Where(val => val.UserID == userid).FirstOrDefault();
+                        FacilityManager manager = db.FacilityManagers.Where(val => val.UserID == userid).FirstOrDefault();
+                        if (player != null && lat != "" && lon != "")
+                        {
+                            player.Latitude = Convert.ToDouble(lat);
+                            player.Longitude = Convert.ToDouble(lon);
+                            db.SaveChanges();
+                        }
+                        if (manager != null && lat != "" && lon != "")
+                        {
+                            manager.Latitude = Convert.ToDouble(lat);
+                            manager.Longitude = Convert.ToDouble(lon);
+                            db.SaveChanges();
+                        }
+                        return RedirectToLocal(returnUrl);
+                    }
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -191,7 +213,7 @@ namespace CourtFinder.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, string lat, string lon)
         {
             if (ModelState.IsValid)
             {
@@ -199,8 +221,12 @@ namespace CourtFinder.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
+                    double latitude = Convert.ToDouble(lat);
+                    double longitude = Convert.ToDouble(lon);
                     var role = await UserManager.AddToRolesAsync(user.Id, new string[] { "Player" });
-                    Player player = new Player() { UserID = user.Id, FirstName = model.FirstName, LastName = model.LastName, Gender="Blank", ProfileImage = "/Graphics/default_avatar.png"};
+                    Player player = new Player() { UserID = user.Id, FirstName = model.FirstName,
+                        LastName = model.LastName, Gender="Blank", ProfileImage = "/Graphics/default_avatar.png",
+                        Latitude = latitude, Longitude = longitude};
                     db.Players.Add(player);
                     db.SaveChanges();
 

@@ -32,6 +32,8 @@ namespace CourtFinder.Models
         public string Gender { get; set; } //maybe something like "Male" "Female" or "M" "F"
         public int Height { get; set; } //maybe store as centimeters then do conversion to feet inch
         public int Weight { get; set; }
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         public virtual ICollection<Team> Teams { get; set; }
     }
 }
