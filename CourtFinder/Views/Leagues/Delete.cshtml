@@ -1,0 +1,81 @@
+﻿@model CourtFinder.Models.League
+
+@{
+    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>League</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Bracket.BracketID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bracket.BracketID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegisterStartPeriod)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegisterStartPeriod)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegisterEndPeriod)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegisterEndPeriod)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TeamSize)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TeamSize)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EnrolledTeams)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EnrolledTeams)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MinTeams)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MinTeams)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaxTeams)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaxTeams)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" /> |
+            @Html.ActionLink("Back to List", "Index")
+        </div>
+    }
+</div>

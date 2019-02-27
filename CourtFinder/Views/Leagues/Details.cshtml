@@ -1,0 +1,75 @@
+﻿@model CourtFinder.Models.League
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>League</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Bracket.BracketID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Bracket.BracketID)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegisterStartPeriod)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegisterStartPeriod)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegisterEndPeriod)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegisterEndPeriod)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TeamSize)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TeamSize)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.EnrolledTeams)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.EnrolledTeams)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MinTeams)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MinTeams)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaxTeams)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaxTeams)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.LeagueID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

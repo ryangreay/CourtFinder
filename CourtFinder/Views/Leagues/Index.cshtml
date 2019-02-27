@@ -1,0 +1,59 @@
+﻿@model IEnumerable<CourtFinder.Models.League>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Leagues</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Sport
+        </th>
+        <th>
+            Deadline
+        </th>
+        <th>
+            Team Size
+        </th>
+        <th>
+            Teams Registered
+        </th>
+        <th>
+            Maximum Team Limit
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Sport.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RegisterEndPeriod)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TeamSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.EnrolledTeams)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MaxTeams)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.LeagueID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.LeagueID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.LeagueID })
+            </td>
+        </tr>
+    }
+
+</table>
