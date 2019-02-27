@@ -1,0 +1,48 @@
+﻿@using CourtFinder.Models
+@model CourtFinder.Models.CourtViewModel
+@{
+    ViewBag.Title = "Court";
+}
+
+<div class="container">
+    <div class="row">
+        <h2>@Model.court.CourtName Schedule</h2>
+        <hr />
+    </div>
+</div>
+<div class="container">
+    <div class="row" style="width:100%;height:300px;overflow:auto;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+        @if (Model.court.Games == null || Model.court.Games.Count == 0)
+        {
+            <p>This facility has no leagues.</p>
+        }
+        else
+        {
+            foreach (Game game in Model.court.Games)
+            {
+                using (Html.BeginForm("Game", "Dashboard", FormMethod.Get))
+                {
+                    <div class="col">
+                        <button name="gameID" value="@game.GameID" type="submit" style="border-radius:30px;width:200px;height:200px; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                            <p style="font-size:15px;padding-top:5px;">Gametime: @game.GameStart - @game.GameEnd</p>
+                            <p style="vertical-align:bottom">
+                                @{
+                                    string teams = "";
+                                    foreach (Team team in game.Teams)
+                                    {
+                                        teams += team.TeamName + " vs. ";
+                                    }
+                                    teams = teams.TrimEnd(" vs. ".ToCharArray());
+                                }
+                                @teams
+                            </p>
+                            <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                        </button>
+                    </div>
+
+                }
+            }
+        }
+        </div>
+</div>
+

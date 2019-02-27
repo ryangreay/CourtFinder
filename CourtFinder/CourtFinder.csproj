@@ -232,6 +232,10 @@
     <Compile Include="Migrations\201902261941228_added lat long to facility manager.Designer.cs">
       <DependentUpon>201902261941228_added lat long to facility manager.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201902262157244_added field to name court.cs" />
+    <Compile Include="Migrations\201902262157244_added field to name court.Designer.cs">
+      <DependentUpon>201902262157244_added field to name court.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bracket.cs" />
@@ -271,6 +275,7 @@
     <Content Include="Graphics\search.png" />
     <Content Include="Graphics\sport.png" />
     <Content Include="Graphics\team.png" />
+    <Content Include="Graphics\trophy.png" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="ApplicationInsights.config">
@@ -328,6 +333,8 @@
     <Content Include="Views\Dashboard\Facility.cshtml" />
     <Content Include="Views\Dashboard\Team.cshtml" />
     <Content Include="Views\Dashboard\Game.cshtml" />
+    <Content Include="Views\Dashboard\Court.cshtml" />
+    <Content Include="Views\Dashboard\League.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -367,6 +374,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201902261941228_added lat long to facility manager.resx">
       <DependentUpon>201902261941228_added lat long to facility manager.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201902262157244_added field to name court.resx">
+      <DependentUpon>201902262157244_added field to name court.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

@@ -1,0 +1,157 @@
+﻿@using Microsoft.AspNet.Identity
+@using CourtFinder.Models
+@model CourtFinder.Models.LeagueViewModel
+@{
+    ViewBag.Title = "League";
+    List<string> daysOfWeek = new List<string> {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+    List<string> hoursPerDay = new List<string> { "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM" };
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            @if (Model.facility.FacilityManager.UserID == User.Identity.GetUserId())
+            {
+                using (Html.BeginForm("League", "Dashboard", FormMethod.Post, new { @class = "form" }))
+                {
+                    
+                    <div class="form-row text-center">
+                        <button class="btn btn-primary" type="submit">Save Changes</button>
+                    </div>
+                }
+            }
+            else
+            {
+                <h2>@Model.facility.FacilityName League</h2>
+                <h4>Sport: @Model.league.Sport.Description</h4>
+                <h4>Sign up Period: @Model.league.RegisterStartPeriod = @Model.league.RegisterEndPeriod</h4>
+                <h4>Team Size: @Model.league.TeamSize </h4>
+                <h4>Maximum Team Requirement: @Model.league.MaxTeams teams</h4>
+            }
+        </div>
+        <div class="col-md-3">
+            @if (Model.facility.FacilityManager.UserID == User.Identity.GetUserId())
+            {
+                using (Html.BeginForm("League", "Dashboard", FormMethod.Post, new { @class = "form" }))
+                {
+                    //games start textbox for month day year
+                    //days of week listbox
+                    //time of day listbox
+                    <div class="form-row">
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.gameStartMonth, new { @class = "form-control", @placeholder = "MM", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        <div class="col-md-1">
+                            /
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.gameStartDay, new { @class = "form-control", @placeholder = "DD", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        <div class="col-md-1">
+                            /
+                        </div>
+                        <div class="col-md-4">
+                            @Html.TextBoxFor(m => m.gameStartYear, new { @class = "form-control", @placeholder = "YYYY", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        @Html.ListBoxFor(m => m.daysOfWeek, daysOfWeek.Select(i =>
+                            new SelectListItem { Value = i, Text = i}),
+                            new { Multiple = "Multiple", @class = "form-control", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                    <div class="form-row">
+                        @Html.ListBoxFor(m => m.hoursOfDay, hoursPerDay.Select(i =>
+                            new SelectListItem { Value = i, Text = i}),
+                            new { Multiple = "Multiple", @class = "form-control", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                    <div class="form-row text-center">
+                        <button class="btn btn-primary" type="submit" @(Model.league.RegisterEndPeriod > DateTime.Now || Model.league.MinTeams > Model.league.Teams.Count ? "disabled" : "")>Create Bracket</button>
+                        @if (Model.league.RegisterEndPeriod > DateTime.Now)
+                        {
+                            <p>You can only create a bracket when the sign up period ends.</p>
+                        }
+                        @if (Model.league.MinTeams > Model.league.Teams.Count)
+                        {
+                            <p>Not enough teams have signed up for the league.</p>
+                        }
+                    </div>
+                }
+
+            }
+            else
+            {
+                <h2>League Sign up</h2>
+                <hr />
+                using (Html.BeginForm("League", "Dashboard", new { leagueID = Model.league.LeagueID }, FormMethod.Post, new { @class = "form" }))
+                {
+                    @Html.DropDownListFor(m => m.teamSignupID, Model.myTeams.Select(i => new SelectListItem { Value = i.TeamID.ToString(), Text = i.TeamName }),
+                    "Team Sign up",
+                    new { @class = "custom-select", @style = "padding:8px 50% 8px 50%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    <div class="form-row text-center">
+                        <button class="btn btn-primary" type="submit" @(Model.league.RegisterStartPeriod > DateTime.Now || Model.league.RegisterEndPeriod < DateTime.Now ? "disabled" : "")>Sign up</button>
+                        @if (Model.league.RegisterStartPeriod > DateTime.Now || Model.league.RegisterEndPeriod < DateTime.Now)
+                        {
+                            <p>You can sign up for the league during the register period</p>
+                        }
+                    </div>
+                }
+            }
+
+
+        </div>
+        <div class="col-md-3">
+            <h2>Registered Teams</h2>
+            <hr />
+            <div class="container" style="height:300px;width:auto;overflow-y:auto;">
+                @if (Model.league.Teams == null || Model.league.Teams.Count == 0)
+                {
+                    <p>No teams are registered. Sign up on the left.</p>
+                }
+                else
+                {
+                    foreach (Team team in Model.league.Teams)
+                    {
+                        <div class="row">
+                            <div class="col" style="padding:10px;">
+                                @using (Html.BeginForm("Team", "Dashboard", FormMethod.Get))
+                                {
+                                    <button name="teamID" value="@team.TeamID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                        <p style="font-size:15px;padding-top:5px;">@team.TeamName</p> <p style="vertical-align:bottom">@team.Wins - @team.Losses</p> <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h2>Games</h2>
+            <hr />
+            <div style="height:300px;width:auto;overflow-y:auto;">
+                @if (Model.league.Bracket.Games == null || Model.league.Bracket.Games.Count == 0)
+                {
+                    <p> There are no upcoming games.</p>
+                }
+                else
+                {
+                    foreach (Game game in Model.league.Bracket.Games.OrderBy(val => val.GameStart))
+                    {
+                        using (Html.BeginForm("Game", "Dashboard", FormMethod.Get))
+                        {
+                            <button name="gameID" value="@game.GameID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:white; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                @if (game.GameStart > DateTime.Now)
+                                {
+                                    <p style="color:#42ce4d">Upcoming</p>
+                                }
+                                @game.GameStart
+                                <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                            </button>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+--display league results when all games have been played.

@@ -10,37 +10,37 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h2>Facility</h2>
             <hr />
             @if (User.Identity.GetUserId() != Model.facility.FacilityManager.UserID)
             {
-                <div class="container">
+                <div class="container" style="height:300px;width:auto;overflow:auto;box-shadow:0px 4px 10px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
                     <div class="row">
-                        <div class="col-md-6 text-center">
-                            <h3>@Model.facility.FacilityName</h3>
-                            <h4>Address: @(Model.facility.Address == "" || Model.facility.Address == null ? "Blank" : Model.facility.Address)</h4>
-                            <h4>
-                                Facility Sports:
-                                @{ 
-                                    string s = "";
-                                    if (Model.facility.Sports == null || Model.facility.Sports.Count == 0)
-                                    {
-                                        s = "None at this moment, please check back later.:";
-                                    }
-                                    else
-                                    {
-                                        s = "";
-                                        foreach (Sport sport in Model.facility.Sports)
-                                        {
-                                            s += @sport.Description + ", ";
-                                        }
-                                        s = s.TrimEnd(", ".ToCharArray());
-                                    }
+
+                        <h3>@Model.facility.FacilityName</h3>
+                        <h4>Address: @(Model.facility.Address == "" || Model.facility.Address == null ? "Blank" : Model.facility.Address)</h4>
+                        <h4>
+                            Facility Sports:
+                            @{ 
+                                string s = "";
+                                if (Model.facility.Sports == null || Model.facility.Sports.Count == 0)
+                                {
+                                    s = "None at this moment, please check back later.:";
                                 }
-                                @s
-                            </h4>
-                        </div>
+                                else
+                                {
+                                    s = "";
+                                    foreach (Sport sport in Model.facility.Sports)
+                                    {
+                                        s += @sport.Description + ", ";
+                                    }
+                                    s = s.TrimEnd(", ".ToCharArray());
+                                }
+                            }
+                            @s
+                        </h4>
+                        
                     </div>
                 </div>
             }
@@ -82,9 +82,141 @@
             }
 
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h2>Leagues</h2>
             <hr />
+            @if (User.Identity.GetUserId() == Model.facility.FacilityManager.UserID)
+            {
+                <div class="container" style="padding-bottom:30px;">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <button type="button" data-toggle="modal" data-target="#createLeagueModal" style="background-color:transparent; border:0px;">
+                            <img style="width:20px;height:auto;" src="~/Graphics/add.png" />Create League
+                            </button>
+                        </div>
+                        <div class="col-md-9"></div>
+                    </div>
+                </div>
+            }
+            <div class="container" style="height:300px;width:auto;overflow:auto;box-shadow:0px 4px 10px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                @if (Model.facility.Leagues == null || Model.facility.Leagues.Count == 0)
+                {
+                    <p>This facility has no leagues.</p>
+                }
+                else
+                {
+                    foreach (League league in Model.facility.Leagues)
+                    {
+                        <div class="row">
+                            <div class="col" style="padding:10px;">
+                                @using (Html.BeginForm("League", "Dashboard", FormMethod.Get))
+                                {
+                                    <button name="leagueID" value="@league.LeagueID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                        <p style="font-size:15px;padding-top:5px;">@league.Sport.Description</p> 
+                                        <p style="vertical-align:bottom">Registration: @league.RegisterStartPeriod - @league.RegisterEndPeriod</p> <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h2>Courts</h2>
+            <hr />
+            @if (User.Identity.GetUserId() == Model.facility.FacilityManager.UserID)
+            {
+                <div class="container" style="padding-bottom:30px;">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <button type="button" data-toggle="modal" data-target="#addCourtModal" style="background-color:transparent; border:0px;">
+                                <img style="width:20px;height:auto;" src="~/Graphics/add.png" />Add Court
+                            </button>
+                        </div>
+                        <div class="col-md-9"></div>
+                    </div>
+                </div>
+            }
+            <div class="container" style="height:300px;width:auto;overflow:auto;box-shadow:0px 4px 10px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                @if (Model.facility.Courts == null || Model.facility.Courts.Count == 0)
+                {
+                    <p>This facility has no public courts.</p>
+                }
+                else
+                {
+                    foreach (Court court in Model.facility.Courts)
+                    {
+                        <div class="row">
+                            <div class="col" style="padding:10px;">
+                                @using (Html.BeginForm("Court", "Dashboard", FormMethod.Get))
+                                {
+                                    <button name="courtID" value="@court.CourtID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                        <p style="font-size:15px;padding-top:5px;"> Court @court.CourtID</p>
+                                        <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createLeagueModal" tabindex="-1" role="dialog" aria-labelledby="createLeagueModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createLeagueModalLabel">Create League</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("CreateLeague", "Dashboard", FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <div class="input-group">
+                        <div class="input-group-addon" style="border:0px;">
+                            <div class="input-group-text"><i class="fa fa-address-card-o"></i></div>
+                        </div>
+                        @Html.TextBoxFor(m => m.league.MinTeams, new { @class = "form-control", @placeholder = "Min Teams", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addCourtModal" tabindex="-1" role="dialog" aria-labelledby="addCourtModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCourtModalLabel">Add Court</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("AddCourt", "Dashboard", new { facilityID = Model.facility.FacilityID }, FormMethod.Post))
+            {
+                <div class="modal-body">
+                    <div class="input-group">
+                        <div class="input-group-addon" style="border:0px;">
+                            <div class="input-group-text"><i class="fa fa-address-card-o"></i></div>
+                        </div>
+                        @Html.TextBoxFor(m => m.court.CourtName, new { @class = "form-control", @placeholder = "Court Name / Number", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Add</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            }
         </div>
     </div>
 </div>

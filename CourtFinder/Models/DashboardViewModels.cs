@@ -31,6 +31,8 @@ namespace CourtFinder.Models
         public string address { get; set; }
         public string state { get; set; }
         public string zipCode { get; set; }
+        public League league { get; set; }
+        public Court court { get; set; }
     }
 
     public class TeamViewModel
@@ -41,6 +43,26 @@ namespace CourtFinder.Models
     public class GameViewModel
     {
         public Game game { get; set; }
+        public League league { get; set; }
+        public int winningTeamID { get; set; }
+    }
+
+    public class CourtViewModel
+    {
+        public Court court { get; set; }
+    }
+
+    public class LeagueViewModel
+    {
+        public League league { get; set; }
+        public Facility facility { get; set; }
+        public int teamSignupID { get; set; }
+        public List<Team> myTeams { get; set; }
+        public int gameStartMonth { get; set; }
+        public int gameStartDay { get; set; }
+        public int gameStartYear { get; set; }
+        public List<string> daysOfWeek { get; set; }
+        public List<string> hoursOfDay { get; set; }
     }
 
 }
