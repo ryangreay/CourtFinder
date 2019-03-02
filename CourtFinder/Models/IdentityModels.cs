@@ -36,6 +36,9 @@ namespace CourtFinder.Models
         public DbSet<Court> Courts { get; set; }
         public DbSet<Game> Games { get; set; }
         public DbSet<Bracket> Brackets { get; set; }
+        public DbSet<Day> Days { get; set; }
+        public DbSet<Time> Times { get; set; }
+        public DbSet<BracketResult> BracketResults { get; set; }
 
         public static ApplicationDbContext Create()
         {

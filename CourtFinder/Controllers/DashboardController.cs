@@ -23,6 +23,8 @@ namespace CourtFinder.Controllers
     public class DashboardController : Controller
     {
         ApplicationDbContext db = new ApplicationDbContext();
+
+        //this is used for creating a random teamid
         private static Random random = new Random();
         public static string RandomString(int length)
         {
@@ -31,16 +33,8 @@ namespace CourtFinder.Controllers
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public Game CreateGame(Court court, DateTime start, DateTime end, Team team1, Team team2)
-        {
-            Game game = new Game { Court = court, GameStart = start, GameEnd = end };
-            game.Teams.Add(team1);
-            game.Teams.Add(team2);
-            db.Games.Add(game);
-            db.SaveChanges();
-            return game;
-        }
-
+        //contact google maps rest api and send address, bring into xml document, 
+        //pull the lat and long coords out from the document
         public static GeoCoordinate GetCoordinates(string address)
         {
             var requestUri = string.Format("https://maps.googleapis.com/maps/api/geocode/xml?address={0}&key=AIzaSyDccK65hnsCsuS5VmBDWaWo6BQoBwgcH78", Uri.EscapeDataString(address));
@@ -54,15 +48,9 @@ namespace CourtFinder.Controllers
             var lat = locationElement.Element("lat").Value;
             var lng = locationElement.Element("lng").Value;
             return new GeoCoordinate(Convert.ToDouble(lat), Convert.ToDouble(lng));
-            //using (var client = new WebClient())
-            //{
-            //    string uri = "http://maps.google.com/maps/geo?q='" + region +
-            //      "'&output=csv&key=" + ConfigurationManager.AppSettings["GoogleMapAPI"];
-            //    string[] geocodeInfo = client.DownloadString(uri).Split(',');
-            //    return new GeoCoordinate(Convert.ToDouble(geocodeInfo[2]), Convert.ToDouble(geocodeInfo[3]));
-            //}
         }
 
+        [HttpGet]
         public ActionResult UserProfile(string playerID)
         {
             ProfileViewModel model = new ProfileViewModel();
@@ -275,6 +263,7 @@ namespace CourtFinder.Controllers
                 me.Sports.Clear();
                 me.Sports = db.Sports.Where(val => model.facilitySports.Contains(val.Description)).ToList();
             }
+
             me.FacilityName = model.facility.FacilityName;
             model.facility = me;
             model.sports = db.Sports.Select(val => val.Description).ToList();
@@ -284,10 +273,34 @@ namespace CourtFinder.Controllers
         }
 
         [HttpPost]
-        public ActionResult CreateLeague(FacilityViewModel model)
+        public ActionResult CreateLeague(FacilityViewModel model, int facilityID)
         {
-            //all the logic Matt has been working on for creating a league
-            League league = model.league;
+            Facility facility = db.Facility.Where(val => val.FacilityID == facilityID).FirstOrDefault();
+            if (model.LeagueName != null && model.LeagueName != "")
+            {
+                League league = new League
+                {
+                    LeagueName = model.LeagueName,
+                    MaxTeams = model.maxTeams.GetValueOrDefault(),
+                    MinTeams = model.minTeams.GetValueOrDefault(),
+                    TeamSize = model.teamSize.GetValueOrDefault(),
+                    Sport = db.Sports.Where(val => val.Description == model.sport).FirstOrDefault(),
+                    RegisterStartPeriod = DateTime.Parse(model.registerStartMonth + "/" + model.registerStartDay + "/" + model.registerStartYear),
+                    RegisterEndPeriod = DateTime.Parse(model.registerEndMonth + "/" + model.registerEndDay + "/" + model.registerEndYear)
+                };
+                facility.Leagues.Add(league);
+                db.SaveChanges();
+            }
+
+            model.facility = facility;
+            if (model.facility.Address != null)
+            {
+                model.address = model.facility.Address.Split(',')[0];
+                model.state = model.facility.Address.Split(',')[1];
+                model.zipCode = model.facility.Address.Split(',')[2];
+            }
+            model.facilitySports = model.facility.Sports.Select(val => val.Description).ToList();
+            model.sports = db.Sports.Select(val => val.Description).ToList();
             return View("Facility", model);
         }
 
@@ -296,7 +309,13 @@ namespace CourtFinder.Controllers
         {
             int intFacilityID = int.Parse(facilityID);
             Facility facility = db.Facility.Where(val => val.FacilityID == intFacilityID).FirstOrDefault();
-            Court court = new Court { CourtName = model.court.CourtName, Facility = facility };
+            List<Sport> sports = db.Sports.Where(val => model.courtSports.Contains(val.Description)).ToList();
+
+            Court court = new Court {
+                CourtName = model.court.CourtName,
+                Facility = facility,
+                Sports = sports
+            };
             db.Courts.Add(court);
             db.SaveChanges();
 
@@ -313,6 +332,185 @@ namespace CourtFinder.Controllers
         }
 
         [HttpGet]
+        public ActionResult League(int leagueID)
+        {
+            string userID = User.Identity.GetUserId();
+            LeagueViewModel model = new LeagueViewModel();
+            model.league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
+            model.facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(model.league.LeagueID)).FirstOrDefault();
+            model.sports = db.Sports.Select(val => val.Description).ToList();
+            Player me = db.Players.Where(val => val.UserID == userID).FirstOrDefault();
+            if (me != null)
+            {
+                model.myTeams = me.Teams.ToList();
+            }
+            return View(model);
+        }
+
+        //if it is register end period and min teams have signed up
+        //auto create bracket (build games and schedule on courts)
+        //based on scheduling alogrithm
+        [HttpPost]
+        public ActionResult League(LeagueViewModel model, int leagueID)
+        {
+            string userID = User.Identity.GetUserId();
+            League league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
+            //check if it is league settings and update those form fields
+            if (model.league.LeagueName != null && model.league.LeagueName != "")
+            {
+                league.LeagueName = model.league.LeagueName;
+                league.MaxTeams = model.maxTeams.GetValueOrDefault();
+                league.MinTeams = model.minTeams.GetValueOrDefault();
+                league.TeamSize = model.teamSize.GetValueOrDefault();
+                league.Sport = db.Sports.Where(val => val.Description == model.sport).FirstOrDefault();
+                league.RegisterStartPeriod = DateTime.Parse(model.registerStartMonth + "/" + model.registerStartDay + "/" + model.registerStartYear);
+                league.RegisterEndPeriod = DateTime.Parse(model.registerEndMonth + "/" + model.registerEndDay + "/" + model.registerEndYear);
+                db.SaveChanges();
+            }
+
+            model.league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
+            model.facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(model.league.LeagueID)).FirstOrDefault();
+            model.sports = db.Sports.Select(val => val.Description).ToList();
+            Player me = db.Players.Where(val => val.UserID == userID).FirstOrDefault();
+            if (me != null)
+            {
+                model.myTeams = me.Teams.ToList();
+            }
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult TeamSignup(LeagueViewModel model, int leagueID)
+        {
+            string userID = User.Identity.GetUserId();
+            League league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
+            Team team = db.Teams.Where(val => val.TeamID == model.teamSignupID).FirstOrDefault();
+            //if we dont go over max teams, 
+            //if it is during the sign up process, 
+            //if our teamsize fits league setting,
+            //if none of our team members are on another team in the league
+            //the last check might fail because it wants us to compare ids not objects
+            if (league.MaxTeams >= (league.Teams.Count + 1) &&
+                (league.RegisterStartPeriod < DateTime.Now && league.RegisterEndPeriod > DateTime.Now) &&
+                (league.TeamSize == team.Players.Count) &&
+                (league.Teams.Where(t => team.Players.Any(tp => t.Players.Contains(tp))).Count() == 0))
+            {
+                league.Teams.Add(team);
+                db.SaveChanges();
+            }
+
+            model.league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
+            model.facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(model.league.LeagueID)).FirstOrDefault();
+            model.sports = db.Sports.Select(val => val.Description).ToList();
+            Player me = db.Players.Where(val => val.UserID == userID).FirstOrDefault();
+            if (me != null)
+            {
+                model.myTeams = me.Teams.ToList();
+            }
+            return View("League", model);
+        }
+
+        //abstract scheduling algorithm and append to when the gamewinner gets
+        //set on the game page
+        [HttpPost]
+        public ActionResult CreateBracket(LeagueViewModel model, int leagueID)
+        {
+            string userID = User.Identity.GetUserId();
+            League league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
+            if (model.gameStartMonth != 0)
+            {
+                //if create bracket, check number of teams fits min && max
+                if (league.Teams.Count <= league.MaxTeams && league.Teams.Count >= league.MinTeams)
+                {
+                    List<Day> days = db.Days.Where(val => model.daysOfWeek.Contains(val.Description)).ToList();
+                    List<Time> times = new List<Time>();// db.Times.ToList();
+                    foreach (string selectedHour in model.hoursOfDay)
+                    {
+                        times.AddRange(db.Times.Where(val => val.Description.Hours == DateTime.Parse(selectedHour).TimeOfDay.Hours).ToList());
+                    }
+                    Bracket bracket = new Bracket
+                    {
+                        BracketStartDate = DateTime.Parse(model.gameStartMonth + "/" + model.gameStartDay + "/" + model.gameStartYear),
+                        GameLength = new TimeSpan(model.gameLengthHour.GetValueOrDefault(), model.gameLengthMin.GetValueOrDefault(), 0),
+                        Days = days,
+                        Times = times //Available times //list of hours, 
+                    };
+
+                    //take all registered teams put into list, while list is not empty pull best vs worst
+                    //create game based on timing specified in form and court availability
+                    List<Team> unscheduledTeams = league.Teams.OrderBy(val => (val.Wins / val.Losses)).ToList();
+                    List<Court> availableCourts = db.Courts.Where(val => val.Sports.Select(s => s.Description).Contains(league.Sport.Description)).ToList();
+                    Team best, worst;
+                    Game game;
+                    TimeSpan gameLength = bracket.GameLength;
+                    while (unscheduledTeams.Count != 0)
+                    {
+                        //uneven team count, list top team as bye week
+                        if (unscheduledTeams.Count % 2 != 0)
+                        {
+                            bracket.UnscheduledTeams.Add(unscheduledTeams[0]);
+                            unscheduledTeams.RemoveAt(0); 
+                        }
+
+                        //schedule best vs worse on available facility court, 
+                        //and during bracket available days and times starting at bracketstartdate
+                        best = unscheduledTeams[0];
+                        worst = unscheduledTeams[unscheduledTeams.Count - 1];
+
+                        //loop on available days and available times, start at bracketstartdate
+                        //loop on court that support league sport
+                        //move by gamelength and check if court is available
+                        //if so set available court, available start
+                        for (DateTime date = bracket.BracketStartDate; date <= (bracket.BracketStartDate.AddDays(model.daysBetweenRounds.GetValueOrDefault())); date.AddDays(1))
+                        {
+                            if (bracket.Days.Any(val => val.Description == date.DayOfWeek.ToString())) //if this day is a selected bracket day
+                            {
+                                //loop on times in selected bracket times
+                                foreach (TimeSpan time in bracket.Times.Select(val => val.Description))
+                                {
+                                    DateTime currDate = date.Add(time);
+                                    foreach (Court court in availableCourts)
+                                    {
+                                        //check if currdate to currDate + gametime has no scheduled game, if so grab time and court
+                                        //and schedule game
+                                        bool courtOverlap = court.Games.Any(val =>
+                                            (currDate.Add(bracket.GameLength) > val.GameStart) && currDate < val.GameEnd);
+                                        if (!courtOverlap)
+                                        {
+                                            game = new Game
+                                            {
+                                                Court = court, //available court
+                                                GameStart = currDate, //available day and time
+                                                GameEnd = currDate.Add(gameLength) //GameStart + game length
+                                            };
+                                            game.Teams.Add(best);
+                                            game.Teams.Add(worst);
+                                            bracket.Games.Add(game);
+                                            unscheduledTeams.RemoveAt(0);
+                                            unscheduledTeams.RemoveAt(unscheduledTeams.Count - 1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        
+                    }
+                    league.Bracket = bracket;
+                    db.SaveChanges();
+                }           
+            }
+            model.league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
+            model.facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(model.league.LeagueID)).FirstOrDefault();
+            model.sports = db.Sports.Select(val => val.Description).ToList();
+            Player me = db.Players.Where(val => val.UserID == userID).FirstOrDefault();
+            if (me != null)
+            {
+                model.myTeams = me.Teams.ToList();
+            }
+            return View("League", model);
+        }
+
+        [HttpGet]
         public ActionResult Game(string gameID)
         {
             GameViewModel model = new GameViewModel();
@@ -325,8 +523,10 @@ namespace CourtFinder.Controllers
         public ActionResult Game(GameViewModel model)
         {
             //here we need to check list of unscheduled teams and schedule a new game
-            //with the winning team here against a team in the unscheduled list, schedule it 
-            //x days from today based on days between rounds setting
+            //for each team. Dont allow same teams to play eachother check previous games in bracket
+            //schedule next game daysbetweenrounds after this game. Check if ever team has played all other teams
+            //then we are done. if not done but cant schedule games yet, just add teams to unscheduled list
+            //gonna use bracket results here
 
             int intGameID = 0;
             Team winningTeam = db.Teams.Where(val => val.TeamID == model.winningTeamID).FirstOrDefault();
@@ -336,49 +536,6 @@ namespace CourtFinder.Controllers
 
             model.game = game;
             model.league = db.Leagues.Where(val => val.Bracket.Games.Select(g => g.GameID).Contains(game.GameID)).FirstOrDefault();
-            return View(model);
-        }
-
-        [HttpGet]
-        public ActionResult League(string leagueID)
-        {
-            LeagueViewModel model = new LeagueViewModel();
-            int intLeagueID = int.Parse(leagueID);
-            model.league = db.Leagues.Where(val => val.LeagueID == intLeagueID).FirstOrDefault();
-            return View(model);
-        }
-
-        //if it is register end period and min teams have signed up
-        //auto create bracket (build games and schedule on courts)
-        //based on scheduling alogrithm
-        [HttpPost]
-        public ActionResult League(LeagueViewModel model, string leagueID)
-        {
-            int intLeagueID = int.Parse(leagueID);
-            //check if it is league settings and update those form fields
-            //check if it is create bracket
-                //if create bracket, check number of teams fits min && max
-                //take all registered teams put into list, while list is not empty pull best vs worst
-                //create game based on timing specified in form
-            if (model.teamSignupID != 0)
-            {
-                League league = db.Leagues.Where(val => val.LeagueID == intLeagueID).FirstOrDefault();
-                Team team = db.Teams.Where(val => val.TeamID == model.teamSignupID).FirstOrDefault();
-                //if we dont go over max teams, 
-                //if it is during the sign up process, 
-                //if our teamsize fits league setting,
-                //if none of our team members are on another team in the league
-                //the last check might fail because it wants us to compare ids not objects
-                if (league.MaxTeams >= (league.Teams.Count + 1) &&
-                    (league.RegisterStartPeriod < DateTime.Now && league.RegisterEndPeriod > DateTime.Now) &&
-                    (league.TeamSize >= team.Players.Count) &&
-                    (league.Teams.Where(t => team.Players.Any(tp => t.Players.Contains(tp) ) ).Count() == 0  ))
-                {
-                    league.Teams.Add(team);
-                    db.SaveChanges();
-                }
-            }
-
             return View(model);
         }
 

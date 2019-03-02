@@ -32,7 +32,23 @@ namespace CourtFinder.Models
         public string state { get; set; }
         public string zipCode { get; set; }
         public League league { get; set; }
+
+        //court settings
         public Court court { get; set; }
+        public List<string> courtSports {get; set;}
+
+        //League settings form
+        public string LeagueName { get; set; }
+        public string sport { get; set; }
+        public int? registerStartMonth { get; set; }
+        public int? registerStartDay { get; set; }
+        public int? registerStartYear { get; set; }
+        public int? registerEndMonth { get; set; }
+        public int? registerEndDay { get; set; }
+        public int? registerEndYear { get; set; }
+        public int? teamSize { get; set; }
+        public int? minTeams { get; set; }
+        public int? maxTeams { get; set; }
     }
 
     public class TeamViewModel
@@ -54,15 +70,36 @@ namespace CourtFinder.Models
 
     public class LeagueViewModel
     {
+        //general league info
         public League league { get; set; }
         public Facility facility { get; set; }
+
+        //User join league
         public int teamSignupID { get; set; }
         public List<Team> myTeams { get; set; }
-        public int gameStartMonth { get; set; }
-        public int gameStartDay { get; set; }
-        public int gameStartYear { get; set; }
+
+        //Build bracket form
+        public int? gameStartMonth { get; set; }
+        public int? gameStartDay { get; set; }
+        public int? gameStartYear { get; set; }
+        public int? gameLengthHour { get; set; }
+        public int? gameLengthMin { get; set; }
         public List<string> daysOfWeek { get; set; }
         public List<string> hoursOfDay { get; set; }
+        public int? daysBetweenRounds { get; set; }
+
+        //League settings form
+        public string sport { get; set; }
+        public List<string> sports { get; set; }
+        public int? registerStartMonth { get; set; }
+        public int? registerStartDay { get; set; }
+        public int? registerStartYear { get; set; }
+        public int? registerEndMonth { get; set; }
+        public int? registerEndDay { get; set; }
+        public int? registerEndYear { get; set; }
+        public int? teamSize { get; set; }
+        public int? minTeams { get; set; }
+        public int? maxTeams { get; set; }
     }
 
 }

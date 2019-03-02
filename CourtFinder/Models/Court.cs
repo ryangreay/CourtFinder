@@ -14,11 +14,13 @@ namespace CourtFinder.Models
         public Court()
         {
             this.Games = new HashSet<Game>();
+            this.Sports = new HashSet<Sport>();
         }
         public int CourtID { get; set; }
         public int FacilityID { get; set; }
         public string CourtName { get; set; }
         public virtual Facility Facility { get; set; }
         public virtual ICollection<Game> Games { get; set; }
+        public virtual ICollection<Sport> Sports { get; set; }
     }
 }
