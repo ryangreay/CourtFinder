@@ -1,4 +1,5 @@
-﻿@using CourtFinder.Models
+﻿@using System.Globalization
+@using CourtFinder.Models
 @model CourtFinder.Models.CourtViewModel
 @{
     ViewBag.Title = "Court";
@@ -23,8 +24,8 @@
                 using (Html.BeginForm("Game", "Dashboard", FormMethod.Get))
                 {
                     <div class="col">
-                        <button name="gameID" value="@game.GameID" type="submit" style="border-radius:30px;width:200px;height:200px; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                            <p style="font-size:15px;padding-top:5px;">Gametime: @game.GameStart - @game.GameEnd</p>
+                        <button name="gameID" value="@game.GameID" type="submit" style="margin-left:10px; margin-right:10px; margin-top:4%;border-radius:30px;width:200px;height:200px;background:linear-gradient(150deg, whitesmoke 50%, #fbfbfb 25%); border:0px;border:0px;box-shadow:0px 3px 6px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                            <p style="font-size:15px;padding-top:5px;">Gametime: @game.GameStart.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture) - @game.GameEnd.ToString("h:mm tt", CultureInfo.InvariantCulture)</p>
                             <p style="vertical-align:bottom">
                                 @{
                                     string teams = "";

@@ -17,6 +17,7 @@ namespace CourtFinder.Models
         public int BracketID { get; set; }
         public DateTime BracketStartDate { get; set; }
         public TimeSpan GameLength { get; set; }
+        public int daysBetweenRounds { get; set; }
         public virtual ICollection<Day> Days { get; set; }
         public virtual ICollection<Time> Times { get; set; }
         public virtual ICollection<Game> Games { get; set; }

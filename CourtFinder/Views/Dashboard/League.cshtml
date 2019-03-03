@@ -1,158 +1,39 @@
-﻿@using Microsoft.AspNet.Identity
+﻿@using System.Globalization
+@using Microsoft.AspNet.Identity
 @using CourtFinder.Models
 @model CourtFinder.Models.LeagueViewModel
 @{
     ViewBag.Title = "League";
-    List<string> daysOfWeek = new List<string> {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
+    List<string> daysOfWeek = new List<string> { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday" };
     List<string> hoursPerDay = new List<string> { "6 AM", "7 AM", "8 AM", "9 AM", "10 AM", "11 AM", "12 PM", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM", "6 PM", "7 PM", "8 PM", "9 PM", "10 PM" };
 }
 
 <div class="container">
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
             @if (Model.facility.FacilityManager.UserID == User.Identity.GetUserId())
             {
-                using (Html.BeginForm("League", "Dashboard", new { leagueID = Model.league.LeagueID}, FormMethod.Post, new { @class = "form" }))
-                {
-                    //league league name
-                    <div class="row">
-                            @Html.TextBoxFor(m => m.league.LeagueName, new {@value = Model.league.LeagueName, @class = "form-control", @placeholder = "League Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                            @Html.ValidationMessageFor(m => m.league.LeagueName, "", new { @class = "text-danger" })
-                    </div>
-                    //league sport
-                    <div class="row">
-                        @Html.DropDownListFor(m => m.sport, Model.sports.Select(i => new SelectListItem { Value = i, Text = i, Selected = (Model.sport == i) }),
-                            "Sport" , new {@class = "form-control", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                    </div>
-                    //league  register start
-                    <div class="row">
-                        Signup Open Date:
-                        <div class="col-md-3">
-                            @Html.TextBoxFor(m => m.registerStartMonth, new { @value = Model.registerStartMonth.ToString(), @class = "form-control", @placeholder = "MM", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        </div>
-                        <div class="col-md-1">
-                            /
-                        </div>
-                        <div class="col-md-3">
-                            @Html.TextBoxFor(m => m.registerStartDay, new { @value = Model.registerStartDay.ToString(), @class = "form-control", @placeholder = "DD", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        </div>
-                        <div class="col-md-1">
-                            /
-                        </div>
-                        <div class="col-md-4">
-                            @Html.TextBoxFor(m => m.registerStartYear, new { @value = Model.registerStartYear.ToString(), @class = "form-control", @placeholder = "YYYY", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        </div>
-                    </div>
-                    //league register end
-                    <div class="row">
-                        Signup Close Date:
-                        <div class="col-md-3">
-                            @Html.TextBoxFor(m => m.registerEndMonth, new {@value = Model.registerEndMonth.ToString(), @class = "form-control", @placeholder = "MM", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        </div>
-                        <div class="col-md-1">
-                            /
-                        </div>
-                        <div class="col-md-3">
-                            @Html.TextBoxFor(m => m.registerEndDay, new { @value = Model.registerEndDay.ToString(), @class = "form-control", @placeholder = "DD", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        </div>
-                        <div class="col-md-1">
-                            /
-                        </div>
-                        <div class="col-md-4">
-                            @Html.TextBoxFor(m => m.registerEndYear, new { @value = Model.registerEndYear.ToString(), @class = "form-control", @placeholder = "YYYY", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        </div>
-                    </div>
-                    //league team size
-                    <div class="row">
-                        @Html.DropDownListFor(m => m.teamSize, Enumerable.Range(1, 15).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
-                        (Model.league.TeamSize == 0 ? "Team Size" : Model.league.TeamSize.ToString()),
-                        new { @class = "form-contol", @style = "padding:8px 50% 8px 50%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                    </div>
-                    //league min teams
-                    <div class="row">
-                        @Html.TextBoxFor(m => m.minTeams,  new { @value = Model.minTeams.ToString(), @class = "form-control", @placeholder = "Minimum Teams", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                    </div>
-                    //league max teams
-                    <div class="row">
-                        @Html.TextBoxFor(m => m.maxTeams, new { @value = Model.maxTeams.ToString(), @class = "form-control", @placeholder = "Maximum Teams", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                    </div>
-                    <div class="form-row text-center">
-                        <button class="btn btn-primary" type="submit">Save Changes</button>
-                    </div>
-                }
+                <h2>@Model.facility.FacilityName @Model.league.LeagueName</h2>
+                <button type="button" data-toggle="modal" data-target="#leagueSettingsModal" style="background-color:transparent; border:0px;">
+                    <img style="width:20px;height:auto;" src="~/Graphics/settings.png" />Settings
+                </button>
             }
             else
             {
-                <h2>@Model.facility.FacilityName League @Model.league.LeagueName</h2>
+                <h2>@Model.facility.FacilityName @Model.league.LeagueName</h2>
                 <h4>Sport: @Model.league.Sport.Description</h4>
-                <h4>Sign up Period: @Model.league.RegisterStartPeriod = @Model.league.RegisterEndPeriod</h4>
+                <h4>Sign up Period: @Model.league.RegisterStartPeriod.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture) -
+                    @Model.league.RegisterEndPeriod.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture)</h4>
                 <h4>Team Size: @Model.league.TeamSize </h4>
                 <h4>Maximum Team Requirement: @Model.league.MaxTeams teams</h4>
             }
         </div>
-        <div class="col-md-3">
-            @if (Model.facility.FacilityManager.UserID == User.Identity.GetUserId())
-            {
-                using (Html.BeginForm("CreateBracket", "Dashboard", new { leagueID = Model.league.LeagueID }, FormMethod.Post, new { @class = "form" }))
-                {
-                    <div class="row">
-                        <div class="col-md-3">
-                            @Html.TextBoxFor(m => m.gameStartMonth, new { @class = "form-control", @placeholder = "MM", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        </div>
-                        <div class="col-md-1">
-                            /
-                        </div>
-                        <div class="col-md-3">
-                            @Html.TextBoxFor(m => m.gameStartDay, new { @class = "form-control", @placeholder = "DD", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        </div>
-                        <div class="col-md-1">
-                            /
-                        </div>
-                        <div class="col-md-4">
-                            @Html.TextBoxFor(m => m.gameStartYear, new { @class = "form-control", @placeholder = "YYYY", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        </div>
-                    </div>
-                    <div class="row">
-                        @Html.ListBoxFor(m => m.daysOfWeek, daysOfWeek.Select(i =>
-                            new SelectListItem { Value = i, Text = i}),
-                            new { Multiple = "Multiple", @class = "form-control", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                    </div>
-                    <div class="row">
-                        @Html.ListBoxFor(m => m.hoursOfDay, hoursPerDay.Select(i =>
-                            new SelectListItem { Value = i, Text = i}),
-                            new { Multiple = "Multiple", @class = "form-control", @style = "margin:15px; border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                    </div>
-                    <div class="row">
-                        @Html.DropDownListFor(m => m.gameLengthHour, Enumerable.Range(0, 4).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
-                       "Hr", new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        @Html.DropDownListFor(m => m.gameLengthMin, Enumerable.Range(0, 5).Select(i => new SelectListItem { Value = (i * 10).ToString(), Text = (i * 10).ToString() }),
-                       "Min", new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                    </div>
-                    <div class="row">
-                        Days Between Rounds
-                        @Html.DropDownListFor(m => m.daysBetweenRounds, Enumerable.Range(0, 14).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
-                       "Days", new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                        
-                    </div>
-                    <div class="row text-center">
-                        <button class="btn btn-primary" type="submit" @(Model.league.RegisterEndPeriod > DateTime.Now || Model.league.MinTeams > Model.league.Teams.Count ? "disabled" : "")>Create Bracket</button>
-                        @if (Model.league.RegisterEndPeriod > DateTime.Now)
-                        {
-                            <p style="font-size:12px;color:#c53a3a">You can only create a bracket when the sign up period ends.</p>
-                        }
-                        @if (Model.league.MinTeams > Model.league.Teams.Count)
-                        {
-                            <p style="font-size:12px;color:#c53a3a">Not enough teams have signed up for the league.</p>
-                        }
-                    </div>
-                }
-
-            }
-            else
-            {
+        @if (!(Model.facility.FacilityManager.UserID == User.Identity.GetUserId()))
+        {
+            <div class="col-md-3">
                 <h2>League Sign up</h2>
                 <hr />
-                using (Html.BeginForm("TeamSignup", "Dashboard", new { leagueID = Model.league.LeagueID }, FormMethod.Post, new { @class = "form" }))
+                @using (Html.BeginForm("TeamSignup", "Dashboard", new { leagueID = Model.league.LeagueID }, FormMethod.Post, new { @class = "form" }))
                 {
                     @Html.DropDownListFor(m => m.teamSignupID, Model.myTeams.Select(i => new SelectListItem { Value = i.TeamID.ToString(), Text = i.TeamName }),
                     "Team Sign up",
@@ -165,11 +46,9 @@
                         }
                     </div>
                 }
-            }
-
-
-        </div>
-        <div class="col-md-3">
+            </div> 
+        }
+        <div class="col-md-4">
             <h2>Registered Teams</h2>
             <hr />
             <div class="container" style="height:300px;width:auto;overflow-y:auto;">
@@ -186,7 +65,7 @@
                                 @using (Html.BeginForm("Team", "Dashboard", FormMethod.Get))
                                 {
                                     <button name="teamID" value="@team.TeamID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                                        <p style="font-size:15px;padding-top:5px;">@team.TeamName</p> <p style="vertical-align:bottom">@team.Wins - @team.Losses</p> <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                                        <p style="font-size:15px;padding-top:5px;margin-bottom:0px;">@team.TeamName</p> <p style="vertical-align:bottom">@team.Wins - @team.Losses</p> <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
                                     </button>
                                 }
                             </div>
@@ -195,9 +74,15 @@
                 }
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-4">
             <h2>Games</h2>
             <hr />
+            @if (Model.facility.FacilityManager.UserID == User.Identity.GetUserId() && Model.league.Bracket == null)
+            {
+                <button type="button" data-toggle="modal" data-target="#createBracketModal" style="text-align:center; background-color:transparent; border:0px;">
+                    <img style="width:20px;height:auto;" src="~/Graphics/add.png" />Create Bracket
+                </button>
+            }
             <div style="height:300px;width:auto;overflow-y:auto;">
                 @if (Model.league.Bracket == null || Model.league.Bracket.Games == null || Model.league.Bracket.Games.Count == 0)
                 {
@@ -209,12 +94,9 @@
                     {
                         using (Html.BeginForm("Game", "Dashboard", FormMethod.Get))
                         {
-                            <button name="gameID" value="@game.GameID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:white; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                                @if (game.GameStart > DateTime.Now)
-                                {
-                                    <p style="color:#42ce4d">Upcoming</p>
-                                }
-                                @game.GameStart
+                            <button name="gameID" value="@game.GameID" type="submit" style="margin-bottom:10px; border-radius:30px;width:100%;height:20%; background-color:white; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                <p>@(game.GameStart > DateTime.Now ? Html.Raw("<span style=\"color:#42ce4d\">Upcoming </span>") : Html.Raw("")) @game.Court.CourtName</p>
+                                @game.GameStart.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture)
                                 <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
                             </button>
                         }
@@ -225,3 +107,204 @@
     </div>
 </div>
 --display league results when all games have been played.
+
+<div class="modal fade" id="leagueSettingsModal" tabindex="-1" role="dialog" aria-labelledby="leagueSettingsModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="leagueSettingsModalLabel">League Settings</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("League", "Dashboard", new { LeagueID = Model.league.LeagueID }, FormMethod.Post))
+            {
+                <div class="modal-body"> 
+                    <div class="row" style="margin-bottom:15px">
+                        <div class="col-md-3">
+                            League Name:
+                        </div>
+                        <div class="col-md-7">
+                            @Html.TextBoxFor(m => m.league.LeagueName, new { @value = Model.league.LeagueName, @class = "form-control", @placeholder = "League Name", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            @Html.ValidationMessageFor(m => m.league.LeagueName, "", new { @class = "text-danger" })
+                        </div>        
+                    </div>
+                    <div class="row" style="margin-bottom:15px">
+                        <div class="col-md-1">
+                            Sport:
+                        </div>
+                        <div class="col-md-7">
+                            @Html.DropDownListFor(m => m.sport, Model.sports.Select(i => new SelectListItem { Value = i, Text = i, Selected = (Model.sport == i) }),
+                                                        "Sport" , new {@class = "form-control", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        
+                    </div>
+                    <div class="row" style="margin-bottom:15px;">
+                        <div class="col-md-3">
+                            Signup Open:
+                        </div>
+                        <div class="col-md-2">
+                            @Html.TextBoxFor(m => m.registerStartMonth, new { @value = Model.registerStartMonth.ToString(), @class = "form-control", @placeholder = "MM", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        <div class="col-md-1">
+                            /
+                        </div>
+                        <div class="col-md-2">
+                            @Html.TextBoxFor(m => m.registerStartDay, new { @value = Model.registerStartDay.ToString(), @class = "form-control", @placeholder = "DD", @style = " border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        <div class="col-md-1">
+                            /
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.registerStartYear, new { @value = Model.registerStartYear.ToString(), @class = "form-control", @placeholder = "YYYY", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom:15px">
+                        <div class="col-md-3">
+                            Signup Close:
+                        </div>
+                        <div class="col-md-2">
+                            @Html.TextBoxFor(m => m.registerEndMonth, new { @value = Model.registerEndMonth.ToString(), @class = "form-control", @placeholder = "MM", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        <div class="col-md-1">
+                            /
+                        </div>
+                        <div class="col-md-2">
+                            @Html.TextBoxFor(m => m.registerEndDay, new { @value = Model.registerEndDay.ToString(), @class = "form-control", @placeholder = "DD", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        <div class="col-md-1">
+                            /
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.registerEndYear, new { @value = Model.registerEndYear.ToString(), @class = "form-control", @placeholder = "YYYY", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                    </div>
+                    <div class="row" style="margin-bottom:15px">
+                        <div class="col-md-3">
+                            Team Size:
+                        </div>
+                        <div class="col-md-3">
+                            @Html.DropDownListFor(m => m.league.TeamSize, Enumerable.Range(1, 15).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
+                                                    (Model.league.TeamSize == 0 ? "Team Size" : Model.league.TeamSize.ToString()),
+                                                    new { @class = "form-contol", @style = "padding:10px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        
+                    </div>
+                    <div class="row" style="margin-bottom:15px">
+                        <div class="col-md-3">
+                            Min Reg. Teams:
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.league.MinTeams, new { @value = Model.minTeams.ToString(), @class = "form-control", @placeholder = "Minimum Teams", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                        <div class="col-md-3">
+                            Max Reg. Teams:
+                        </div>
+                        <div class="col-md-3">
+                            @Html.TextBoxFor(m => m.league.MaxTeams, new { @value = Model.maxTeams.ToString(), @class = "form-control", @placeholder = "Maximum Teams", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="createBracketModal" tabindex="-1" role="dialog" aria-labelledby="createBracketModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createBracketModalLabel">Create Bracket</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            @using (Html.BeginForm("CreateBracket", "Dashboard", new { leagueID = Model.league.LeagueID }, FormMethod.Post))
+            {
+            <div class="modal-body">
+                @if (Model.league.RegisterEndPeriod > DateTime.Now)
+                {
+                    <p style="font-size:12px;color:#c53a3a">You can only create a bracket when the sign up period ends.</p>
+                }
+                @if (Model.league.MinTeams > Model.league.Teams.Count)
+                {
+                    <p style="font-size:12px;color:#c53a3a">Not enough teams have signed up for the league.</p>
+                }
+                <div class="row" style="margin-bottom:15px;">
+                    <div class="col-md-3">
+                        Games Start:
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(m => m.gameStartMonth, new { @class = "form-control", @placeholder = "MM", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                    <div class="col-md-1">
+                        /
+                    </div>
+                    <div class="col-md-2">
+                        @Html.TextBoxFor(m => m.gameStartDay, new { @class = "form-control", @placeholder = "DD", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                    <div class="col-md-1">
+                        /
+                    </div>
+                    <div class="col-md-3">
+                        @Html.TextBoxFor(m => m.gameStartYear, new { @class = "form-control", @placeholder = "YYYY", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                </div>
+                <div class="row" style="margin-bottom:15px;">
+                    <div class="col-md-4">
+                        Game Days:
+                    </div>
+                    <div class="col-md-7">
+                        @Html.ListBoxFor(m => m.daysOfWeek, daysOfWeek.Select(i =>
+                            new SelectListItem { Value = i, Text = i}),
+                            new { Multiple = "Multiple", @class = "form-control", @style = " border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                </div>
+                <div class="row"  style="margin-bottom:15px;">
+                    <div class="col-md-4">
+                        Game Times:
+                    </div>
+                    <div class="col-md-7">
+                        @Html.ListBoxFor(m => m.hoursOfDay, hoursPerDay.Select(i =>
+                             new SelectListItem { Value = i, Text = i}),
+                             new { Multiple = "Multiple", @class = "form-control", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                    
+                </div>
+                <div class="row"  style="margin-bottom:15px;">
+                    <div class="col-md-4">
+                        Approx. Game Length:
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DropDownListFor(m => m.gameLengthHour, Enumerable.Range(0, 4).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
+                              "Hr", new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                    <div class="col-md-2">
+                        @Html.DropDownListFor(m => m.gameLengthMin, Enumerable.Range(0, 5).Select(i => new SelectListItem { Value = (i * 10).ToString(), Text = (i * 10).ToString() }),
+                              "Min", new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                </div>
+                <div class="row"  style="margin-bottom:15px;">
+                    <div class="col-md-3">
+                        Days Between Rounds:
+                    </div>
+                    <div class="col-md-5">
+                        @Html.DropDownListFor(m => m.daysBetweenRounds, Enumerable.Range(0, 14).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
+                           "Days", new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                </div>
+            </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" @(Model.league.RegisterEndPeriod > DateTime.Now || Model.league.MinTeams > Model.league.Teams.Count ? "disabled" : "")>
+                        Create
+                    </button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>

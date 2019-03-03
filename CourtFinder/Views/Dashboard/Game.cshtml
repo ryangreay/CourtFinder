@@ -1,51 +1,56 @@
-﻿@using CourtFinder.Models
+﻿@using System.Globalization
+@using CourtFinder.Models
 @model CourtFinder.Models.GameViewModel
 @{
     ViewBag.Title = "Game";
 }
 <div class="container">
     <div class="row text-center">
-        <h2>Game</h2>
-        <h4>Gametime: @Model.game.GameStart - @Model.game.GameEnd</h4>
+        <h3>Gametime: @Model.game.GameStart.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture) - @Model.game.GameEnd.ToString("h:mm tt", CultureInfo.InvariantCulture)</h3>
         <hr />
     </div>
     <div class="row text-center">
         @{
             int count = 0;
         }
+        <div class="col-md-1"></div>
         @foreach (Team team in Model.game.Teams)
         {
             count++;
+            
             <div class="col-md-5 text-center">
                 @if (Model.game.WinningTeam != null && team.TeamID == Model.game.WinningTeam.TeamID)
                 {
                     <img src="~/Graphics/trophy.png" style="width:30px;height:auto;" />
                 }
-                <div style="@(Model.game.WinningTeam != null && team.TeamID == Model.game.WinningTeam.TeamID ? Html.Raw("background:linear-gradient(150deg, #55efc4 50%, #e7e7e7 25%);") : Html.Raw(""))box-shadow:0px 4px 10px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                    <h3>@team.TeamName</h3>
+                <div style="background:linear-gradient(150deg, whitesmoke 50%, #e7e7e7 25%);@(Model.game.WinningTeam != null && team.TeamID == Model.game.WinningTeam.TeamID ? Html.Raw("background:linear-gradient(150deg, #55efc4 50%, #e7e7e7 25%);") : Html.Raw(""))box-shadow:0px 4px 10px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                    <h3 style="padding-top:10px;">@team.TeamName</h3>
                     <hr />
                     <h4>
                         W-L:@team.Wins-@team.Losses,
                         <span style="@(team.Standing > 0.75 ? Html.Raw("color:green;") : (team.Standing > 0.50 ? Html.Raw("color:lightgreen") : (team.Standing > 0.25 ? Html.Raw("color:#ffd800") : Html.Raw("color:red"))))">Rep: @team.Standing</span>
                     </h4>
                     <hr />
-                    @foreach (Player player in team.Players)
-                    {
-                        using (Html.BeginForm("UserProfile", "Dashboard", FormMethod.Get))
+                    <div style="height:200px;width:auto;overflow:auto;">
+                        @foreach (Player player in team.Players)
                         {
-                            <button name="playerID" value="@player.PlayerID" type="submit" style="border-radius:10px;padding:10px; width:100%;height:20%; background-color:white; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                                <img style="border-radius: 50%; width:40px; height:auto; float:left;" src="@Html.Raw(player.ProfileImage)" />
-                                <p>@player.FirstName @player.LastName</p>
-                                <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
-                            </button>
-                        }
+                            using (Html.BeginForm("UserProfile", "Dashboard", FormMethod.Get))
+                            {
+                                <button name="playerID" value="@player.PlayerID" type="submit" style="border-radius:10px;width:70%;padding:10px;height:20%; background-color:white; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                    <img style="border-radius: 50%; width:40px; height:auto; float:left;" src="@Html.Raw(player.ProfileImage)" />
+                                    <p>@player.FirstName @player.LastName</p>
+                                    <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                                </button>
+                            }
 
-                    }
+                        }
+                    </div>
+                    
                 </div>
             </div>
             if (count < Model.game.Teams.Count)
             {
-                <div class="col text-center">
+                <div class="col-md-1 text-center" style="margin-top:10%;">
                     <h2>
                         VS.
                     </h2>

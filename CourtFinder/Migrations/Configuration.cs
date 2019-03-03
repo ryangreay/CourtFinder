@@ -39,7 +39,7 @@ namespace CourtFinder.Migrations
             //context.Sports.AddOrUpdate(new Models.Sport { Description = "Badminton" });
             //context.Sports.AddOrUpdate(new Models.Sport { Description = "Table Tennis" });
             //context.Sports.AddOrUpdate(new Models.Sport { Description = "Softball" });
-            context.SaveChanges();
+            //context.SaveChanges();
         }
     }
 }

@@ -50,6 +50,54 @@ namespace CourtFinder.Controllers
             return new GeoCoordinate(Convert.ToDouble(lat), Convert.ToDouble(lng));
         }
 
+        public bool scheduleGame(Bracket bracket, List<Court> availableCourts, Game game, Team team1, Team team2)
+        {
+            bool scheduled = false;
+            TimeSpan gameLength = bracket.GameLength;
+            //schedule game with this team starting at daysbetweenRounds.
+            //loop on available days and available times, start at bracketstartdate
+            //loop on court that support league sport
+            //move by gamelength and check if court is available
+            //if so set available court, available start
+            for (DateTime date = bracket.BracketStartDate; date <= (bracket.BracketStartDate.AddDays(bracket.daysBetweenRounds)); date = date.AddDays(1))
+            {
+                if (bracket.Days.Any(val => val.Description == date.DayOfWeek.ToString())) //if this day is a selected bracket day
+                {
+                    //loop on times in selected bracket times
+                    foreach (TimeSpan time in bracket.Times.Select(val => val.Description))
+                    {
+                        DateTime currDate = date.Add(time);
+                        foreach (Court court in availableCourts)
+                        {
+                            //check if currdate to currDate + gametime has no scheduled game, if so grab time and court
+                            //and schedule game
+                            bool courtOverlap = court.Games.Any(val => currDate < val.GameEnd &&
+                                (currDate.Add(bracket.GameLength) > val.GameStart) );
+                            if (!courtOverlap)
+                            {
+                                game = new Game
+                                {
+                                    Court = court, //available court
+                                    CourtID = court.CourtID,
+                                    GameStart = currDate, //available day and time
+                                    GameEnd = currDate.Add(gameLength) //GameStart + game length 
+                                };
+                                game.Teams.Add(team1);
+                                game.Teams.Add(team2);
+                                bracket.Games.Add(game);
+                                court.Games.Add(game);
+                                scheduled = true;
+                                goto sheduleSuccess;
+                            }
+                        }
+                    }
+                }
+            }
+
+            sheduleSuccess:;
+            return scheduled;
+        }
+
         [HttpGet]
         public ActionResult UserProfile(string playerID)
         {
@@ -344,6 +392,16 @@ namespace CourtFinder.Controllers
             {
                 model.myTeams = me.Teams.ToList();
             }
+
+            model.sport = db.Sports.Where(val => val.Description == model.league.Sport.Description)
+                .Select( val => val.Description).FirstOrDefault();
+            model.registerStartMonth = model.league.RegisterStartPeriod.Month;
+            model.registerStartDay = model.league.RegisterStartPeriod.Day;
+            model.registerStartYear = model.league.RegisterStartPeriod.Year;
+            model.registerEndMonth = model.league.RegisterEndPeriod.Month;
+            model.registerEndDay = model.league.RegisterEndPeriod.Day;
+            model.registerEndYear = model.league.RegisterEndPeriod.Year;
+
             return View(model);
         }
 
@@ -359,9 +417,9 @@ namespace CourtFinder.Controllers
             if (model.league.LeagueName != null && model.league.LeagueName != "")
             {
                 league.LeagueName = model.league.LeagueName;
-                league.MaxTeams = model.maxTeams.GetValueOrDefault();
-                league.MinTeams = model.minTeams.GetValueOrDefault();
-                league.TeamSize = model.teamSize.GetValueOrDefault();
+                league.MaxTeams = model.league.MaxTeams;
+                league.MinTeams = model.league.MinTeams;
+                league.TeamSize = model.league.TeamSize;
                 league.Sport = db.Sports.Where(val => val.Description == model.sport).FirstOrDefault();
                 league.RegisterStartPeriod = DateTime.Parse(model.registerStartMonth + "/" + model.registerStartDay + "/" + model.registerStartYear);
                 league.RegisterEndPeriod = DateTime.Parse(model.registerEndMonth + "/" + model.registerEndDay + "/" + model.registerEndYear);
@@ -426,23 +484,26 @@ namespace CourtFinder.Controllers
                     List<Time> times = new List<Time>();// db.Times.ToList();
                     foreach (string selectedHour in model.hoursOfDay)
                     {
-                        times.AddRange(db.Times.Where(val => val.Description.Hours == DateTime.Parse(selectedHour).TimeOfDay.Hours).ToList());
+                        DateTime hr = DateTime.Parse(selectedHour);
+                        times.AddRange(db.Times.Where(val => val.Description.Hours == hr.TimeOfDay.Hours).ToList());
                     }
                     Bracket bracket = new Bracket
                     {
                         BracketStartDate = DateTime.Parse(model.gameStartMonth + "/" + model.gameStartDay + "/" + model.gameStartYear),
                         GameLength = new TimeSpan(model.gameLengthHour.GetValueOrDefault(), model.gameLengthMin.GetValueOrDefault(), 0),
                         Days = days,
-                        Times = times //Available times //list of hours, 
+                        Times = times, //Available times //list of hours, 
+                        daysBetweenRounds = model.daysBetweenRounds.GetValueOrDefault()
                     };
 
                     //take all registered teams put into list, while list is not empty pull best vs worst
                     //create game based on timing specified in form and court availability
-                    List<Team> unscheduledTeams = league.Teams.OrderBy(val => (val.Wins / val.Losses)).ToList();
+                    List<Team> unscheduledTeams = league.Teams.OrderBy(val => (val.Wins / (val.Wins == 0 && val.Losses == 0 ? 1 : val.Wins + val.Losses) ) ).ToList();
                     List<Court> availableCourts = db.Courts.Where(val => val.Sports.Select(s => s.Description).Contains(league.Sport.Description)).ToList();
                     Team best, worst;
-                    Game game;
+                    Game game = new Game();
                     TimeSpan gameLength = bracket.GameLength;
+                    bool scheduled = false;
                     while (unscheduledTeams.Count != 0)
                     {
                         //uneven team count, list top team as bye week
@@ -457,41 +518,12 @@ namespace CourtFinder.Controllers
                         best = unscheduledTeams[0];
                         worst = unscheduledTeams[unscheduledTeams.Count - 1];
 
-                        //loop on available days and available times, start at bracketstartdate
-                        //loop on court that support league sport
-                        //move by gamelength and check if court is available
-                        //if so set available court, available start
-                        for (DateTime date = bracket.BracketStartDate; date <= (bracket.BracketStartDate.AddDays(model.daysBetweenRounds.GetValueOrDefault())); date.AddDays(1))
+                        scheduled = scheduleGame(bracket, availableCourts, game, best, worst);
+
+                        if (scheduled)
                         {
-                            if (bracket.Days.Any(val => val.Description == date.DayOfWeek.ToString())) //if this day is a selected bracket day
-                            {
-                                //loop on times in selected bracket times
-                                foreach (TimeSpan time in bracket.Times.Select(val => val.Description))
-                                {
-                                    DateTime currDate = date.Add(time);
-                                    foreach (Court court in availableCourts)
-                                    {
-                                        //check if currdate to currDate + gametime has no scheduled game, if so grab time and court
-                                        //and schedule game
-                                        bool courtOverlap = court.Games.Any(val =>
-                                            (currDate.Add(bracket.GameLength) > val.GameStart) && currDate < val.GameEnd);
-                                        if (!courtOverlap)
-                                        {
-                                            game = new Game
-                                            {
-                                                Court = court, //available court
-                                                GameStart = currDate, //available day and time
-                                                GameEnd = currDate.Add(gameLength) //GameStart + game length
-                                            };
-                                            game.Teams.Add(best);
-                                            game.Teams.Add(worst);
-                                            bracket.Games.Add(game);
-                                            unscheduledTeams.RemoveAt(0);
-                                            unscheduledTeams.RemoveAt(unscheduledTeams.Count - 1);
-                                        }
-                                    }
-                                }
-                            }
+                            unscheduledTeams.RemoveAt(0);
+                            unscheduledTeams.RemoveAt(unscheduledTeams.Count - 1);
                         }
                         
                     }
@@ -520,17 +552,72 @@ namespace CourtFinder.Controllers
         }
 
         [HttpPost]
-        public ActionResult Game(GameViewModel model)
+        public ActionResult Game(GameViewModel model, int gameID)
         {
             //here we need to check list of unscheduled teams and schedule a new game
             //for each team. Dont allow same teams to play eachother check previous games in bracket
-            //schedule next game daysbetweenrounds after this game. Check if ever team has played all other teams
+            //schedule next game daysbetweenrounds after this game. Check if every team has played all other teams
             //then we are done. if not done but cant schedule games yet, just add teams to unscheduled list
-            //gonna use bracket results here
-
-            int intGameID = 0;
+            //gonna set bracket results here
             Team winningTeam = db.Teams.Where(val => val.TeamID == model.winningTeamID).FirstOrDefault();
-            Game game = db.Games.Where(val => val.GameID == intGameID).FirstOrDefault();
+            Game game = db.Games.Where(val => val.GameID == gameID).FirstOrDefault();
+            Bracket bracket = db.Brackets.Where(val => val.Games.Select(g => g.GameID).Contains(game.GameID)).FirstOrDefault();
+            League league = db.Leagues.Where(val => val.Bracket.BracketID == bracket.BracketID).FirstOrDefault();
+            foreach (Team team in game.Teams)
+            {
+                //check if bracketresult exists already and update wins / losses
+                //if not create a new bracketresult. The relationship should be 1 bracketresult for each team
+                BracketResult result = db.BracketResults
+                    .Where(val => val.BracketID == bracket.BracketID && val.TeamID == team.TeamID)
+                    .FirstOrDefault();
+                if (result == null)
+                {
+                    result = new BracketResult
+                    {
+                        Team = team,
+                        Wins = (winningTeam.TeamID == team.TeamID ? 1 : 0),
+                        Losses = (winningTeam.TeamID == team.TeamID ? 0 : 1),
+                        Bracket = bracket
+                    };
+                    db.BracketResults.Add(result);
+                }
+                else
+                {
+                    result.Wins = (winningTeam.TeamID == team.TeamID) ? result.Wins++ : result.Wins;
+                    result.Losses = (winningTeam.TeamID == team.TeamID) ? result.Losses : result.Losses++;
+                }
+
+                //check if they have played every other team in the league, maybe do count of games == count of teams - 1
+                //if so, we are done here
+                List<Game> ourGames;
+                Team scheduledTeam = null;
+                bool scheduled = false;
+                List<Court> availableCourts = db.Courts.Where(val => val.Sports.Select(s => s.Description).Contains(league.Sport.Description)).ToList();
+                Game newGame = new Game();
+                if (!(bracket.Games.Select(g => g.Teams.Select(t => t.TeamID).Contains(team.TeamID)).Count() == (league.Teams.Count() - 1)) )
+                {
+                    //if not, loop unscheduled list and choose the first team we have not already played. 
+                    foreach (Team unscheduledTeam in bracket.UnscheduledTeams)
+                    {
+                        ourGames = bracket.Games.Where(val => val.Teams.Select(t => t.TeamID).Contains(team.TeamID)).ToList();
+                        if (ourGames.Where(val => val.Teams.Select(t => t.TeamID).Contains(unscheduledTeam.TeamID)).Count() == 0)
+                        {
+                            //schedule game with this team starting at daysbetweenRounds.
+                            scheduled = scheduleGame(bracket, availableCourts, newGame, team, unscheduledTeam);
+                            if (scheduled)
+                            {
+                                bracket.UnscheduledTeams.Remove(scheduledTeam);
+                                goto scheduleSuccess;
+                            }
+                        }
+                    }
+
+                    //if we cant find anyone to play just add ourselves to unscheduled list
+                    bracket.UnscheduledTeams.Add(team);
+                    scheduleSuccess:;
+                }
+            }
+
             game.WinningTeam = winningTeam;
             db.SaveChanges();
 

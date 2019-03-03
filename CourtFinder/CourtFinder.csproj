@@ -264,6 +264,10 @@
     <Compile Include="Migrations\201903020202471_set sport as virtual for test.Designer.cs">
       <DependentUpon>201903020202471_set sport as virtual for test.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903031729442_update.cs" />
+    <Compile Include="Migrations\201903031729442_update.Designer.cs">
+      <DependentUpon>201903031729442_update.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bracket.cs" />
@@ -297,6 +301,7 @@
     <Content Include="Graphics\join.png" />
     <Content Include="Graphics\male_avatar.png" />
     <Content Include="Graphics\schedule.png" />
+    <Content Include="Graphics\settings.png" />
     <Content Include="Graphics\sort.png" />
     <Content Include="Graphics\statistics.png" />
     <Content Include="favicon.ico" />
@@ -429,6 +434,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903020202471_set sport as virtual for test.resx">
       <DependentUpon>201903020202471_set sport as virtual for test.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903031729442_update.resx">
+      <DependentUpon>201903031729442_update.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
