@@ -204,69 +204,13 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201902241936204_Initial.cs" />
-    <Compile Include="Migrations\201902241936204_Initial.Designer.cs">
-      <DependentUpon>201902241936204_Initial.cs</DependentUpon>
+    <Compile Include="Migrations\201903032221449_Initial.cs" />
+    <Compile Include="Migrations\201903032221449_Initial.Designer.cs">
+      <DependentUpon>201903032221449_Initial.cs</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201902250104244_added address field to facility.cs" />
-    <Compile Include="Migrations\201902250104244_added address field to facility.Designer.cs">
-      <DependentUpon>201902250104244_added address field to facility.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902251810519_changed facility lat long to double.cs" />
-    <Compile Include="Migrations\201902251810519_changed facility lat long to double.Designer.cs">
-      <DependentUpon>201902251810519_changed facility lat long to double.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902251837405_added sports list to facility.cs" />
-    <Compile Include="Migrations\201902251837405_added sports list to facility.Designer.cs">
-      <DependentUpon>201902251837405_added sports list to facility.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902252228181_facility manager points to one facility.cs" />
-    <Compile Include="Migrations\201902252228181_facility manager points to one facility.Designer.cs">
-      <DependentUpon>201902252228181_facility manager points to one facility.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902261905366_added lat long to player.cs" />
-    <Compile Include="Migrations\201902261905366_added lat long to player.Designer.cs">
-      <DependentUpon>201902261905366_added lat long to player.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902261941228_added lat long to facility manager.cs" />
-    <Compile Include="Migrations\201902261941228_added lat long to facility manager.Designer.cs">
-      <DependentUpon>201902261941228_added lat long to facility manager.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902262157244_added field to name court.cs" />
-    <Compile Include="Migrations\201902262157244_added field to name court.Designer.cs">
-      <DependentUpon>201902262157244_added field to name court.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902272336146_added league name.cs" />
-    <Compile Include="Migrations\201902272336146_added league name.Designer.cs">
-      <DependentUpon>201902272336146_added league name.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201902282018322_add sports to courts and gamelength to bracket.cs" />
-    <Compile Include="Migrations\201902282018322_add sports to courts and gamelength to bracket.Designer.cs">
-      <DependentUpon>201902282018322_add sports to courts and gamelength to bracket.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201903010125139_added available times and hours to bracket for scheduling.cs" />
-    <Compile Include="Migrations\201903010125139_added available times and hours to bracket for scheduling.Designer.cs">
-      <DependentUpon>201903010125139_added available times and hours to bracket for scheduling.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201903010343404_added bracketResults and unscheduled teams to brackets.cs" />
-    <Compile Include="Migrations\201903010343404_added bracketResults and unscheduled teams to brackets.Designer.cs">
-      <DependentUpon>201903010343404_added bracketResults and unscheduled teams to brackets.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201903020047030_sport tbl change2.cs" />
-    <Compile Include="Migrations\201903020047030_sport tbl change2.Designer.cs">
-      <DependentUpon>201903020047030_sport tbl change2.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201903020139210_update league bracket relation.cs" />
-    <Compile Include="Migrations\201903020139210_update league bracket relation.Designer.cs">
-      <DependentUpon>201903020139210_update league bracket relation.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201903020202471_set sport as virtual for test.cs" />
-    <Compile Include="Migrations\201903020202471_set sport as virtual for test.Designer.cs">
-      <DependentUpon>201903020202471_set sport as virtual for test.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201903031729442_update.cs" />
-    <Compile Include="Migrations\201903031729442_update.Designer.cs">
-      <DependentUpon>201903031729442_update.cs</DependentUpon>
+    <Compile Include="Migrations\201903041716121_added game completed.cs" />
+    <Compile Include="Migrations\201903041716121_added game completed.Designer.cs">
+      <DependentUpon>201903041716121_added game completed.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -390,53 +334,11 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\201902241936204_Initial.resx">
-      <DependentUpon>201902241936204_Initial.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201903032221449_Initial.resx">
+      <DependentUpon>201903032221449_Initial.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902250104244_added address field to facility.resx">
-      <DependentUpon>201902250104244_added address field to facility.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902251810519_changed facility lat long to double.resx">
-      <DependentUpon>201902251810519_changed facility lat long to double.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902251837405_added sports list to facility.resx">
-      <DependentUpon>201902251837405_added sports list to facility.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902252228181_facility manager points to one facility.resx">
-      <DependentUpon>201902252228181_facility manager points to one facility.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902261905366_added lat long to player.resx">
-      <DependentUpon>201902261905366_added lat long to player.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902261941228_added lat long to facility manager.resx">
-      <DependentUpon>201902261941228_added lat long to facility manager.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902262157244_added field to name court.resx">
-      <DependentUpon>201902262157244_added field to name court.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902272336146_added league name.resx">
-      <DependentUpon>201902272336146_added league name.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201902282018322_add sports to courts and gamelength to bracket.resx">
-      <DependentUpon>201902282018322_add sports to courts and gamelength to bracket.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201903010125139_added available times and hours to bracket for scheduling.resx">
-      <DependentUpon>201903010125139_added available times and hours to bracket for scheduling.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201903010343404_added bracketResults and unscheduled teams to brackets.resx">
-      <DependentUpon>201903010343404_added bracketResults and unscheduled teams to brackets.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201903020047030_sport tbl change2.resx">
-      <DependentUpon>201903020047030_sport tbl change2.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201903020139210_update league bracket relation.resx">
-      <DependentUpon>201903020139210_update league bracket relation.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201903020202471_set sport as virtual for test.resx">
-      <DependentUpon>201903020202471_set sport as virtual for test.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201903031729442_update.resx">
-      <DependentUpon>201903031729442_update.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201903041716121_added game completed.resx">
+      <DependentUpon>201903041716121_added game completed.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

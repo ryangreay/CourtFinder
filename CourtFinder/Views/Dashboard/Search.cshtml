@@ -78,7 +78,7 @@
                 <div style="height:450px;overflow-y:auto;">
                     @foreach (Facility facility in Model.facilities)
                     {
-                        <div class="row">
+                        <div class="row" style="margin-right:0px;">
                             <div class="col" style="padding:10px;">
                                 @using (Html.BeginForm("Facility", "Dashboard", FormMethod.Get))
                                 {

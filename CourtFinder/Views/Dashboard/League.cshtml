@@ -1,4 +1,4 @@
-﻿@using System.Globalization
+﻿@using System.Globalization;
 @using Microsoft.AspNet.Identity
 @using CourtFinder.Models
 @model CourtFinder.Models.LeagueViewModel
@@ -14,58 +14,88 @@
             @if (Model.facility.FacilityManager.UserID == User.Identity.GetUserId())
             {
                 <h2>@Model.facility.FacilityName @Model.league.LeagueName</h2>
-                <button type="button" data-toggle="modal" data-target="#leagueSettingsModal" style="background-color:transparent; border:0px;">
-                    <img style="width:20px;height:auto;" src="~/Graphics/settings.png" />Settings
+                <button type="button" data-toggle="modal" data-target="#leagueSettingsModal" class="btn btn-primary" >
+                    Settings
                 </button>
             }
             else
             {
                 <h2>@Model.facility.FacilityName @Model.league.LeagueName</h2>
                 <h4>Sport: @Model.league.Sport.Description</h4>
-                <h4>Sign up Period: @Model.league.RegisterStartPeriod.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture) -
-                    @Model.league.RegisterEndPeriod.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture)</h4>
+                <h4>Sign up Period: @Model.league.RegisterStartPeriod.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture) -
+                    @Model.league.RegisterEndPeriod.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)</h4>
                 <h4>Team Size: @Model.league.TeamSize </h4>
                 <h4>Maximum Team Requirement: @Model.league.MaxTeams teams</h4>
             }
         </div>
-        @if (!(Model.facility.FacilityManager.UserID == User.Identity.GetUserId()))
-        {
-            <div class="col-md-3">
-                <h2>League Sign up</h2>
-                <hr />
-                @using (Html.BeginForm("TeamSignup", "Dashboard", new { leagueID = Model.league.LeagueID }, FormMethod.Post, new { @class = "form" }))
-                {
-                    @Html.DropDownListFor(m => m.teamSignupID, Model.myTeams.Select(i => new SelectListItem { Value = i.TeamID.ToString(), Text = i.TeamName }),
-                    "Team Sign up",
-                    new { @class = "custom-select", @style = "padding:8px 50% 8px 50%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
-                    <div class="row text-center">
-                        <button class="btn btn-primary" type="submit" @(Model.league.RegisterStartPeriod > DateTime.Now || Model.league.RegisterEndPeriod < DateTime.Now ? "disabled" : "")>Sign up</button>
-                        @if (Model.league.RegisterStartPeriod > DateTime.Now || Model.league.RegisterEndPeriod < DateTime.Now)
-                        {
-                            <p>You can sign up for the league during the register period</p>
-                        }
-                    </div>
-                }
-            </div> 
-        }
         <div class="col-md-4">
-            <h2>Registered Teams</h2>
+            <h2>@(Model.league.Bracket == null ? "Registered Teams" : "Standings")</h2>
             <hr />
             <div class="container" style="height:300px;width:auto;overflow-y:auto;">
+                @if (!(Model.facility.FacilityManager.UserID == User.Identity.GetUserId()))
+                {
+                    using (Html.BeginForm("TeamSignup", "Dashboard", new { leagueID = Model.league.LeagueID }, FormMethod.Post, new { @class = "form" }))
+                    {
+                        <div class="row text-center">
+                            <div class="col-md-7">
+                                @Html.DropDownListFor(m => m.teamSignupID, Model.myTeams.Select(i => new SelectListItem { Value = i.TeamID.ToString(), Text = i.TeamName }),
+                                      "Team Sign up",
+                                      new { @class = "custom-select", @style = "padding:8px 12px 8px 12px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                            </div>
+                            <div class="col-md-3">
+                                <button class="btn btn-primary" type="submit" @(Model.league.RegisterStartPeriod > DateTime.Now || Model.league.RegisterEndPeriod < DateTime.Now ? "disabled" : "")>Sign up</button>
+                            </div>
+                        </div>
+                        
+                        <div class="row text-center">
+                            
+                            @if (Model.league.RegisterStartPeriod > DateTime.Now || Model.league.RegisterEndPeriod < DateTime.Now)
+                            {
+                                <p>You can sign up for the league during the register period</p>
+                            }
+                        </div>
+                    }
+                }
                 @if (Model.league.Teams == null || Model.league.Teams.Count == 0)
                 {
-                    <p>No teams are registered. Sign up on the left.</p>
+                    <p>No teams are registered. Teams Sign up above.</p>
                 }
                 else
                 {
-                    foreach (Team team in Model.league.Teams)
+                    List<Team> teamsList = new List<Team>();
+                    if (Model.results.Count == 0)
+                    {
+                        teamsList = Model.league.Teams.OrderBy(val => (val.Wins / (val.Wins + val.Losses == 0 ? 1 : val.Wins + val.Losses))).ToList();
+                    }
+                    else
+                    {
+                        teamsList = Model.results
+                            .OrderByDescending(val => (val.Wins / (val.Wins + val.Losses == 0 ? 1 : val.Wins + val.Losses)))
+                            .Select(val => val.Team).ToList();
+                    }
+
+                    foreach (Team team in teamsList)
                     {
                         <div class="row">
                             <div class="col" style="padding:10px;">
                                 @using (Html.BeginForm("Team", "Dashboard", FormMethod.Get))
                                 {
                                     <button name="teamID" value="@team.TeamID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                                        <p style="font-size:15px;padding-top:5px;margin-bottom:0px;">@team.TeamName</p> <p style="vertical-align:bottom">@team.Wins - @team.Losses</p> <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                                        <p style="font-size:15px;padding-top:5px;margin-bottom:0px;">@team.TeamName</p>
+                                        <p style="vertical-align:bottom">
+                                            @{
+                                                string wl = "";
+                                                if (Model.results.Count == 0)
+                                                {
+                                                    wl = team.Wins + " - " + team.Losses;
+                                                }
+                                                else
+                                                {
+                                                    wl = @Model.results.Where(r => r.Team.TeamID == team.TeamID).FirstOrDefault().Wins + " - " + @Model.results.Where(r => r.Team.TeamID == team.TeamID).FirstOrDefault().Losses;
+                                                }
+                                            }
+                                            @wl
+                                        </p> <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
                                     </button>
                                 }
                             </div>
@@ -90,12 +120,12 @@
                 }
                 else
                 {
-                    foreach (Game game in Model.league.Bracket.Games.OrderBy(val => val.GameStart))
+                    foreach (Game game in Model.league.Bracket.Games.OrderBy(val => val.GameCompleted).ThenBy(val => val.GameStart))
                     {
                         using (Html.BeginForm("Game", "Dashboard", FormMethod.Get))
                         {
                             <button name="gameID" value="@game.GameID" type="submit" style="margin-bottom:10px; border-radius:30px;width:100%;height:20%; background-color:white; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                                <p>@(game.GameStart > DateTime.Now ? Html.Raw("<span style=\"color:#42ce4d\">Upcoming </span>") : Html.Raw("")) @game.Court.CourtName</p>
+                                <p>@(game.GameStart > DateTime.Now && !game.GameCompleted ? Html.Raw("<span style=\"color:#42ce4d\">Upcoming </span>") : Html.Raw("")) @game.Court.CourtName</p>
                                 @game.GameStart.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture)
                                 <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
                             </button>
@@ -106,7 +136,6 @@
         </div>
     </div>
 </div>
---display league results when all games have been played.
 
 <div class="modal fade" id="leagueSettingsModal" tabindex="-1" role="dialog" aria-labelledby="leagueSettingsModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

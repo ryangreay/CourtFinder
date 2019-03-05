@@ -1,4 +1,5 @@
-﻿@using System.Globalization
+﻿@using Microsoft.AspNet.Identity
+@using System.Globalization
 @using CourtFinder.Models
 @model CourtFinder.Models.GameViewModel
 @{
@@ -6,25 +7,18 @@
 }
 <div class="container">
     <div class="row text-center">
-        <h3>Gametime: @Model.game.GameStart.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture) - @Model.game.GameEnd.ToString("h:mm tt", CultureInfo.InvariantCulture)</h3>
+        <h3> <a href="@Url.Action( "Court", new { courtID = Model.game.CourtID})">@Model.game.Court.CourtName</a>: @Model.game.GameStart.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture) - @Model.game.GameEnd.ToString("h:mm tt", CultureInfo.InvariantCulture)</h3>
         <hr />
     </div>
     <div class="row text-center">
-        @{
-            int count = 0;
-        }
         <div class="col-md-1"></div>
-        @foreach (Team team in Model.game.Teams)
+        @for (int i = 0; i < 2; i++)
         {
-            count++;
-            
+            Team team = (i == 0 ? Model.game.Team1 : Model.game.Team2);
             <div class="col-md-5 text-center">
-                @if (Model.game.WinningTeam != null && team.TeamID == Model.game.WinningTeam.TeamID)
-                {
-                    <img src="~/Graphics/trophy.png" style="width:30px;height:auto;" />
-                }
-                <div style="background:linear-gradient(150deg, whitesmoke 50%, #e7e7e7 25%);@(Model.game.WinningTeam != null && team.TeamID == Model.game.WinningTeam.TeamID ? Html.Raw("background:linear-gradient(150deg, #55efc4 50%, #e7e7e7 25%);") : Html.Raw(""))box-shadow:0px 4px 10px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                    <h3 style="padding-top:10px;">@team.TeamName</h3>
+
+                <div style="background:linear-gradient(150deg, whitesmoke 50%, #e7e7e7 25%);@(Model.game.WinningTeam != null && team.TeamID == Model.game.WinningTeam.TeamID ? Html.Raw("background:linear-gradient(150deg, #9dc183 50%, #4CBB17 25%);") : Html.Raw(""))box-shadow:0px 4px 10px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                    <h3 style="padding-top:10px;">@team.TeamName @(Model.game.WinningTeam != null && team.TeamID == Model.game.WinningTeam.TeamID ? Html.Raw("<img src=\"/Graphics/trophy.png\" style=\"width:30px;height:auto;\" />") : Html.Raw("")) </h3>
                     <hr />
                     <h4>
                         W-L:@team.Wins-@team.Losses,
@@ -45,10 +39,10 @@
 
                         }
                     </div>
-                    
+
                 </div>
             </div>
-            if (count < Model.game.Teams.Count)
+            if (i == 0)
             {
                 <div class="col-md-1 text-center" style="margin-top:10%;">
                     <h2>
@@ -59,17 +53,22 @@
         }
     </div>
 </div>
-@using (Html.BeginForm("Game", "Dashboard", FormMethod.Post, new { @class = "form" }))
+@if (User.Identity.GetUserId() == Model.facility.FacilityManager.UserID)
 {
-    <h3>Mark winner</h3>
-    <div class="form-group">
-        @foreach (Team team in Model.game.Teams)
-        {
-            @Html.RadioButtonFor(m => m.winningTeamID, team.TeamID, new { @class = "form-control" })  @team.TeamName
-        }
-    </div>
-    <div class="form-row">
-        <button class="btn btn-primary" type="submit">Update</button>
-    </div>
+    using (Html.BeginForm("Game", "Dashboard", new { gameID = Model.game.GameID }, FormMethod.Post, new { @class = "form" }))
+    {
+        <h3>Mark winner</h3>
+        <div class="custom-control custom-radio">
+            @Html.RadioButtonFor(m => m.winningTeamID, Model.game.Team1.TeamID, new { @id = "radioTeam1", @class = "custom-control-input", @type = "radio" })
+            <label class="custom-control-label" style="font-weight:normal" for="radioTeam1">@Model.game.Team1.TeamName</label>
+        </div>
+        <div class="custom-control custom-radio">
+            @Html.RadioButtonFor(m => m.winningTeamID, Model.game.Team2.TeamID, new { @id = "radioTeam2", @class = "custom-control-input", @type = "radio" })
+            <label class="custom-control-label" style="font-weight:normal" for="radioTeam2">@Model.game.Team2.TeamName</label>
+        </div>
+        <div class="row">
+            <button class="btn btn-primary" type="submit">Update</button>
+        </div>
+    }
 }
 

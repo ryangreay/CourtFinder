@@ -1,4 +1,5 @@
-﻿@using Microsoft.AspNet.Identity
+﻿@using System.Globalization;
+@using Microsoft.AspNet.Identity
 @using CourtFinder.Models;
 @model CourtFinder.Models.TeamViewModel
 @{
@@ -62,20 +63,22 @@
         <h2>Upcoming</h2>
         <hr />
         <div style="height:300px;width:auto;overflow-y:auto;">
-            @if (Model.team.Games == null || Model.team.Games.Count == 0)
+            @if (Model.games == null || Model.games.Count == 0)
             {
                 <p> There are no upcoming games. Join a nearby league to schedule games.</p>
             }
             else
             {
-                foreach (Game game in Model.team.Games)
+                foreach (Game game in Model.games)
                 {
                     using (Html.BeginForm("Game", "Dashboard", FormMethod.Get))
                     {
-                <button name="gameID" value="@game.GameID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:white; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                    @game.GameStart @game.Teams.Where(val => val.TeamID != Model.team.TeamID).Select(val => val.TeamName)
-                    <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
-                </button>
+                        <button name="gameID" value="@game.GameID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:white; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                            <p>@(game.GameCompleted ? Html.Raw("<span style=\"color:#42ce4d\">Completed </span>") : Html.Raw("<span style=\"color:#f0ad4e\">Upcoming </span>")) @game.Court.CourtName</p>
+                            @game.GameStart.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture) 
+                            @game.Team1.TeamName vs. @game.Team2.TeamName
+                            <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                        </button>
                     }
                 }
             }

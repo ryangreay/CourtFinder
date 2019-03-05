@@ -15,8 +15,8 @@
             <hr />
             @if (User.Identity.GetUserId() != Model.facility.FacilityManager.UserID)
             {
-                <div class="container" style="height:300px;width:auto;overflow:auto;box-shadow:0px 4px 10px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                    <div class="row">
+                <div class="container" style="height:300px;width:auto;overflow:auto;">
+                    <div class="row text-center">
 
                         <h3>@Model.facility.FacilityName</h3>
                         <h4>Address: @(Model.facility.Address == "" || Model.facility.Address == null ? "Blank" : Model.facility.Address)</h4>
