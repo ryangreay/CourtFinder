@@ -102,6 +102,7 @@ namespace CourtFinder.Controllers
         public ActionResult UserProfile(string playerID)
         {
             ProfileViewModel model = new ProfileViewModel();
+
             Player player;
             if (playerID == null || playerID == "")
             {
@@ -168,22 +169,23 @@ namespace CourtFinder.Controllers
             db.Teams.Add(team);
             db.SaveChanges();
 
-            model.player = me;
-            model.teams = me.Teams.ToList();
-            return View("UserProfile", model);
+            return RedirectToAction("UserProfile", "Dashboard");
         }
 
         [HttpPost]
         public ActionResult JoinTeam(ProfileViewModel model)
         {
+            //if (guid != (string)TempData["guid"])
+            //    return RedirectToAction("UserProfile", "Dashboard");
             string userid = User.Identity.GetUserId();
             Player me = db.Players.Where(val => val.UserID == userid).FirstOrDefault();
             Team team = db.Teams.Where(val => val.PrivateTeamID == model.joinTeamID).FirstOrDefault();
-            team.Players.Add(me);
-            db.SaveChanges();
-            model.player = me;
-            model.teams = me.Teams.ToList();
-            return View("UserProfile", model);
+            if (team != null)
+            {
+                team.Players.Add(me);
+                db.SaveChanges();
+            }
+            return RedirectToAction("UserProfile", "Dashboard");
         }       
 
         [HttpGet]
@@ -215,12 +217,12 @@ namespace CourtFinder.Controllers
             Team team = db.Teams.Where(val => val.TeamID == model.team.TeamID).FirstOrDefault();
             team.TeamName = model.team.TeamName;
             db.SaveChanges();
-            model.team = team;
-            return View(model);
+            //model.team = team;
+            return RedirectToAction("Team", "Dashboard", new { teamID = team.TeamID });
         }
 
         [HttpGet]
-        public ActionResult Search()
+        public ActionResult Search(string distance, string sport)
         {
             string userid = User.Identity.GetUserId();
             Player player = db.Players.Where(val => val.UserID == userid).FirstOrDefault();
@@ -228,8 +230,15 @@ namespace CourtFinder.Controllers
             SearchViewModel model = new SearchViewModel();
             //get all facilities within default 10 mile radius from my location
             model.sports = db.Sports.ToList();
-            model.Distance = 10;
-            model.sport = null;
+            if (distance != null && distance != "")
+                model.Distance = int.Parse(distance);
+            else
+                model.Distance = 10;
+            if (sport != null && sport != "")
+                model.sport = db.Sports.Where(val => val.Description == sport).FirstOrDefault();
+            else
+                model.sport = null;
+
             List<Facility> facilities = new List<Facility>();
             if ((player != null && player.Latitude != 0) || (manager != null && manager.Latitude != 0))
             {
@@ -270,7 +279,7 @@ namespace CourtFinder.Controllers
 
             model.facilities = facilities;
 
-            return View(model);
+            return RedirectToAction("Search", "Dashboard", new { distance, sport});
         }  
 
         [HttpGet]
@@ -297,14 +306,36 @@ namespace CourtFinder.Controllers
             }
             model.facilitySports = model.facility.Sports.Select(val => val.Description).ToList();
             model.sports = db.Sports.Select(val => val.Description).ToList();
+            Player me = db.Players.Where(val => val.UserID == userid).FirstOrDefault();
+            model.isPinned = (me != null ? me.Facilities.Any(val => val.FacilityID == intFacilityID) : false);
             return View(model);
         }
 
         [HttpPost]
-        public ActionResult Facility(FacilityViewModel model, string state, string facilityID)
+        public ActionResult PinFacility(FacilityViewModel model, int facilityID)
         {
-            int intFacilityID = int.Parse(facilityID);
-            Facility me = db.Facility.Where(val => val.FacilityID == intFacilityID).FirstOrDefault();
+            string userid = User.Identity.GetUserId();
+            Player me = db.Players.Where(val => val.UserID == userid).FirstOrDefault();
+            Facility facility = db.Facility.Where(val => val.FacilityID == facilityID).FirstOrDefault();
+            if (me.Facilities.Any(val => val.FacilityID == facilityID))
+            {
+                me.Facilities.Remove(facility);
+                model.isPinned = false;
+            }
+            else
+            {
+                me.Facilities.Add(facility);
+                model.isPinned = true;
+            }
+            db.SaveChanges();
+
+            return RedirectToAction("Facility", "Dashboard", new { facilityID = facilityID.ToString() });
+        }
+
+        [HttpPost]
+        public ActionResult Facility(FacilityViewModel model, string state, int facilityID)
+        {
+            Facility me = db.Facility.Where(val => val.FacilityID == facilityID).FirstOrDefault();
             if (model.address != "" && model.address != null &&
                 model.zipCode != "" && model.zipCode != null &&
                 state != "" && state != null)
@@ -322,11 +353,9 @@ namespace CourtFinder.Controllers
             }
 
             me.FacilityName = model.facility.FacilityName;
-            model.facility = me;
-            model.sports = db.Sports.Select(val => val.Description).ToList();
-
             db.SaveChanges();
-            return View(model);
+            
+            return RedirectToAction("Facility", "Dashboard", new { facilityID = facilityID.ToString() });
         }
 
         [HttpPost]
@@ -349,23 +378,13 @@ namespace CourtFinder.Controllers
                 db.SaveChanges();
             }
 
-            model.facility = facility;
-            if (model.facility.Address != null)
-            {
-                model.address = model.facility.Address.Split(',')[0];
-                model.state = model.facility.Address.Split(',')[1];
-                model.zipCode = model.facility.Address.Split(',')[2];
-            }
-            model.facilitySports = model.facility.Sports.Select(val => val.Description).ToList();
-            model.sports = db.Sports.Select(val => val.Description).ToList();
-            return View("Facility", model);
+            return RedirectToAction("Facility", "Dashboard", new { facilityID = facilityID.ToString() });
         }
 
         [HttpPost]
-        public ActionResult AddCourt(FacilityViewModel model, string facilityID)
+        public ActionResult AddCourt(FacilityViewModel model, int facilityID)
         {
-            int intFacilityID = int.Parse(facilityID);
-            Facility facility = db.Facility.Where(val => val.FacilityID == intFacilityID).FirstOrDefault();
+            Facility facility = db.Facility.Where(val => val.FacilityID == facilityID).FirstOrDefault();
             List<Sport> sports = db.Sports.Where(val => model.courtSports.Contains(val.Description)).ToList();
 
             Court court = new Court {
@@ -375,17 +394,8 @@ namespace CourtFinder.Controllers
             };
             db.Courts.Add(court);
             db.SaveChanges();
-
-            model.facility = facility;
-            if (model.facility.Address != null)
-            {
-                model.address = model.facility.Address.Split(',')[0];
-                model.state = model.facility.Address.Split(',')[1];
-                model.zipCode = model.facility.Address.Split(',')[2];
-            }
-            model.facilitySports = model.facility.Sports.Select(val => val.Description).ToList();
-            model.sports = db.Sports.Select(val => val.Description).ToList();
-            return View("Facility", model);
+            
+            return RedirectToAction("Facility", "Dashboard", new { facilityID = facilityID.ToString() });
         }
 
         [HttpGet]
@@ -395,7 +405,8 @@ namespace CourtFinder.Controllers
             LeagueViewModel model = new LeagueViewModel();
             model.league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
             List<int> leagueTeams = model.league.Teams.Select(t => t.TeamID).ToList();
-            model.results = db.BracketResults.Where(val => leagueTeams.Contains(val.TeamID) && val.BracketID == model.league.Bracket.BracketID).ToList();
+            if (model.league.Bracket != null)
+                model.results = db.BracketResults.Where(val => leagueTeams.Contains(val.TeamID) && val.BracketID == model.league.Bracket.BracketID).ToList();
             model.facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(model.league.LeagueID)).FirstOrDefault();
             model.sports = db.Sports.Select(val => val.Description).ToList();
             Player me = db.Players.Where(val => val.UserID == userID).FirstOrDefault();
@@ -437,17 +448,7 @@ namespace CourtFinder.Controllers
                 db.SaveChanges();
             }
 
-            model.league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
-            List<int> leagueTeams = model.league.Teams.Select(t => t.TeamID).ToList();
-            model.results = db.BracketResults.Where(val => leagueTeams.Contains(val.TeamID) && val.BracketID == model.league.Bracket.BracketID).ToList();
-            model.facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(model.league.LeagueID)).FirstOrDefault();
-            model.sports = db.Sports.Select(val => val.Description).ToList();
-            Player me = db.Players.Where(val => val.UserID == userID).FirstOrDefault();
-            if (me != null)
-            {
-                model.myTeams = me.Teams.ToList();
-            }
-            return View(model);
+            return RedirectToAction("League", "Dashboard", new { leagueID });
         }
 
         [HttpPost]
@@ -470,17 +471,7 @@ namespace CourtFinder.Controllers
                 db.SaveChanges();
             }
 
-            model.league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
-            List<int> leagueTeams = model.league.Teams.Select(t => t.TeamID).ToList();
-            model.results = db.BracketResults.Where(val => leagueTeams.Contains(val.TeamID) && val.BracketID == model.league.Bracket.BracketID).ToList();
-            model.facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(model.league.LeagueID)).FirstOrDefault();
-            model.sports = db.Sports.Select(val => val.Description).ToList();
-            Player me = db.Players.Where(val => val.UserID == userID).FirstOrDefault();
-            if (me != null)
-            {
-                model.myTeams = me.Teams.ToList();
-            }
-            return View("League", model);
+            return RedirectToAction("League", "Dashboard", new { leagueID });
         }
 
         //abstract scheduling algorithm and append to when the gamewinner gets
@@ -562,17 +553,7 @@ namespace CourtFinder.Controllers
                 }           
             }
 
-            model.league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
-            List<int> leagueTeams = model.league.Teams.Select(t => t.TeamID).ToList();
-            model.results = db.BracketResults.Where(val => leagueTeams.Contains(val.TeamID) && val.BracketID == model.league.Bracket.BracketID).ToList();
-            model.facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(model.league.LeagueID)).FirstOrDefault();
-            model.sports = db.Sports.Select(val => val.Description).ToList();
-            Player me = db.Players.Where(val => val.UserID == userID).FirstOrDefault();
-            if (me != null)
-            {
-                model.myTeams = me.Teams.ToList();
-            }
-            return View("League", model);
+            return RedirectToAction("League", "Dashboard", new { leagueID });
         }
 
         [HttpGet]
@@ -672,12 +653,7 @@ namespace CourtFinder.Controllers
             game.GameCompleted = true;
             db.SaveChanges();
 
-            model.game = game;
-            Bracket fBracket = db.Brackets.Where(val => val.Games.Select(g => g.GameID).Contains(model.game.GameID)).FirstOrDefault();
-            League fLeague = db.Leagues.Where(val => val.Bracket.BracketID == fBracket.BracketID).FirstOrDefault();
-            Facility facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(fLeague.LeagueID)).FirstOrDefault();
-            model.facility = facility;
-            return View(model);
+            return RedirectToAction("Game", "Dashboard", new { gameID = gameID.ToString() });
         }
 
         [HttpGet]

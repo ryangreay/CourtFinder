@@ -14,7 +14,7 @@
             @if (Model.facility.FacilityManager.UserID == User.Identity.GetUserId())
             {
                 <h2>@Model.facility.FacilityName @Model.league.LeagueName</h2>
-                <button type="button" data-toggle="modal" data-target="#leagueSettingsModal" class="btn btn-primary" >
+                <button type="button" data-toggle="modal" data-target="#leagueSettingsModal" class="btn btn-primary">
                     Settings
                 </button>
             }
@@ -22,11 +22,14 @@
             {
                 <h2>@Model.facility.FacilityName @Model.league.LeagueName</h2>
                 <h4>Sport: @Model.league.Sport.Description</h4>
-                <h4>Sign up Period: @Model.league.RegisterStartPeriod.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture) -
-                    @Model.league.RegisterEndPeriod.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)</h4>
+                <h4>
+                    Sign up Period: @Model.league.RegisterStartPeriod.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture) -
+                    @Model.league.RegisterEndPeriod.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)
+                </h4>
                 <h4>Team Size: @Model.league.TeamSize </h4>
                 <h4>Maximum Team Requirement: @Model.league.MaxTeams teams</h4>
             }
+                <h3>@(Model.league.Bracket != null && Model.league.Bracket.Games.All(val => val.GameCompleted) ? Html.Raw("<span style=\"color:#42ce4d\">Completed </span>") : Html.Raw(""))</h3>
         </div>
         <div class="col-md-4">
             <h2>@(Model.league.Bracket == null ? "Registered Teams" : "Standings")</h2>
@@ -73,7 +76,7 @@
                             .OrderByDescending(val => (val.Wins / (val.Wins + val.Losses == 0 ? 1 : val.Wins + val.Losses)))
                             .Select(val => val.Team).ToList();
                     }
-
+                    int count = 0;
                     foreach (Team team in teamsList)
                     {
                         <div class="row">
@@ -81,7 +84,10 @@
                                 @using (Html.BeginForm("Team", "Dashboard", FormMethod.Get))
                                 {
                                     <button name="teamID" value="@team.TeamID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                                        <p style="font-size:15px;padding-top:5px;margin-bottom:0px;">@team.TeamName</p>
+                                        <p style="font-size:15px;padding-top:5px;margin-bottom:0px;">
+                                        @team.TeamName  
+                                        @(Model.league.Bracket.Games.All(val => val.GameCompleted) && count == 0 ? Html.Raw("<img src=\"/Graphics/trophy.png\" style=\"width:20px; height:auto;\" />") : Html.Raw("") )
+                                        </p>
                                         <p style="vertical-align:bottom">
                                             @{
                                                 string wl = "";
@@ -100,6 +106,7 @@
                                 }
                             </div>
                         </div>
+                        count++;
                     }
                 }
             </div>

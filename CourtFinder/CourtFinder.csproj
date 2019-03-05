@@ -212,6 +212,10 @@
     <Compile Include="Migrations\201903041716121_added game completed.Designer.cs">
       <DependentUpon>201903041716121_added game completed.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903051907173_many to many on players and facilities.cs" />
+    <Compile Include="Migrations\201903051907173_many to many on players and facilities.Designer.cs">
+      <DependentUpon>201903051907173_many to many on players and facilities.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bracket.cs" />
@@ -339,6 +343,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903041716121_added game completed.resx">
       <DependentUpon>201903041716121_added game completed.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903051907173_many to many on players and facilities.resx">
+      <DependentUpon>201903051907173_many to many on players and facilities.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

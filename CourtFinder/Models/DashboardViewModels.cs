@@ -49,6 +49,9 @@ namespace CourtFinder.Models
         public int? teamSize { get; set; }
         public int? minTeams { get; set; }
         public int? maxTeams { get; set; }
+
+        //did user pin this
+        public bool isPinned { get; set; }
     }
 
     public class TeamViewModel

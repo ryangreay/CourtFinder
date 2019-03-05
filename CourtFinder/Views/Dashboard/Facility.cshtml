@@ -17,7 +17,6 @@
             {
                 <div class="container" style="height:300px;width:auto;overflow:auto;">
                     <div class="row text-center">
-
                         <h3>@Model.facility.FacilityName</h3>
                         <h4>Address: @(Model.facility.Address == "" || Model.facility.Address == null ? "Blank" : Model.facility.Address)</h4>
                         <h4>
@@ -40,7 +39,12 @@
                             }
                             @s
                         </h4>
-                        
+                        @using (Html.BeginForm("PinFacility", "Dashboard", new { facilityID = Model.facility.FacilityID}, FormMethod.Post))
+                        {
+                            <button type="submit" class="@(Model.isPinned ? Html.Raw("btn btn-warning") : Html.Raw("btn btn-light"))">
+                                @(Model.isPinned ? Html.Raw("Pinned") : Html.Raw("Pin Facility"))
+                            </button>
+                        }
                     </div>
                 </div>
             }
@@ -187,8 +191,14 @@
                    </div>
                 </div>
                 <div class="row" style="margin-bottom:15px">
-                    @Html.DropDownListFor(m => m.sport, Model.sports.Select(i => new SelectListItem { Value = i, Text = i }),
-                        "Sport" , new {@class = "form-control", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    <div class="col-md-1">
+                        Sport:
+                    </div>
+                    <div class="col-md-7">
+                        @Html.DropDownListFor(m => m.sport, Model.sports.Select(i => new SelectListItem { Value = i, Text = i }),
+                               "Sport" , new {@class = "form-control", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
+                    
                 </div>
                 <div class="row" style="margin-bottom:15px">
                     <div class="col-md-3">
@@ -239,9 +249,15 @@
                     </div>
                 </div>
                 <div class="row" style="margin-bottom:15px">
-                    @Html.DropDownListFor(m => m.teamSize, Enumerable.Range(1, 15).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
-                        "Team Size", new { @class = "form-contol", @style = "border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    <div class="col-md-3">
+                        Team Size:
+                    </div>
+                    <div class="col-md-3">
+                        @Html.DropDownListFor(m => m.teamSize, Enumerable.Range(1, 15).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
+                             "Team Size", new { @class = "form-contol", @style = "padding:10px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+                    </div>
                     
+
                 </div>
                 <div class="row" style="margin-bottom:15px">
                     <div class="col-md-3">

@@ -20,6 +20,7 @@ namespace CourtFinder.Models
         public Player()
         { 
             this.Teams = new HashSet<Team>();
+            this.Facilities = new HashSet<Facility>();
         }
         public int PlayerID { get; set; }
         public string UserID { get; set; }
@@ -35,5 +36,6 @@ namespace CourtFinder.Models
         public double Latitude { get; set; }
         public double Longitude { get; set; }
         public virtual ICollection<Team> Teams { get; set; }
+        public virtual ICollection<Facility> Facilities { get; set; }
     }
 }

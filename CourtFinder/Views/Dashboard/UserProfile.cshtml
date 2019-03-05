@@ -39,7 +39,7 @@
 }
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h2>Profile Info</h2>
             <hr />
             @if (User.Identity.GetUserId() == Model.player.UserID)
@@ -56,7 +56,7 @@
                                         Browse @Html.TextBoxFor(m => m.profilePhoto, new { @type = "file", @style = "display:none;" })
                                     </span>
                                 </label>
-                                <input type="text" class="form-control input-sm" style="border:0px; width:50%; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" readonly>
+                                <input type="text" class="form-control input-sm" style="border:0px; width:75%; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" readonly>
                             </div>
                         </div>
 
@@ -90,7 +90,7 @@
 
                                 @Html.DropDownList("month", Enumerable.Range(1, 12).Select(i => new SelectListItem { Value = i.ToString(), Text = System.Globalization.CultureInfo.InvariantCulture.DateTimeFormat.GetAbbreviatedMonthName(i) }),
 (Model.player.BirthDate.HasValue ? Model.player.BirthDate.Value.ToString("MMM") : "Month"),
-new { @class = "custom-select", @style = "padding:8px 50% 8px 50%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+new { @class = "custom-select", @style = "padding:8px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -98,7 +98,7 @@ new { @class = "custom-select", @style = "padding:8px 50% 8px 50%;border:0px;box
 
                                 @Html.DropDownList("day", Enumerable.Range(1, 31).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
 (Model.player.BirthDate.HasValue ? Model.player.BirthDate.Value.ToString("dd") : "Day"),
-new { @class = "form-contol", @style = "padding:8px 50% 8px 50%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+new { @class = "form-contol", @style = "padding:8px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                             </div>
                         </div>
                         <div class="col-md-3">
@@ -106,7 +106,7 @@ new { @class = "form-contol", @style = "padding:8px 50% 8px 50%;border:0px;box-s
 
                                 @Html.DropDownList("year", Enumerable.Range(1930, 79).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
 (Model.player.BirthDate.HasValue ? Model.player.BirthDate.Value.ToString("yyyy") : "Year"),
-new { @class = "form-contol", @style = "padding:8px 50% 8px 50%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+new { @class = "form-contol", @style = "padding:8px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                             </div>
 
                         </div>
@@ -116,18 +116,18 @@ new { @class = "form-contol", @style = "padding:8px 50% 8px 50%;border:0px;box-s
                         <div class="col-md-3">
                             @Html.DropDownList("feetHeight", Enumerable.Range(3, 5).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
 (Model.player.Height == 0 ? "Feet" : ((int)(Model.player.Height / 12)).ToString()),
-new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+new { @class = "form-contol", @style = "padding:8px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                         </div>
                         <div class="col-md-3">
                             @Html.DropDownList("inchesHeight", Enumerable.Range(0, 12).Select(i => new SelectListItem { Value = i.ToString(), Text = i.ToString() }),
 (Model.player.Height == 0 ? "Inches" : (Model.player.Height % 12).ToString()),
-new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+new { @class = "form-contol", @style = "padding:8px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
 
                         </div>
                         <div class="col-md-3">
                             @Html.DropDownList("lbWeight", Enumerable.Range(10, 60).Select(i => new SelectListItem { Value = (i * 5).ToString(), Text = (i * 5).ToString() }),
 (Model.player.Weight == 0 ? "Weight" : (Model.player.Weight).ToString()),
-new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
+new { @class = "form-contol", @style = "padding:8px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
 
                         </div>
                     </div>
@@ -152,39 +152,39 @@ new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-s
             }
             else
             {
-                    <div style="box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                        <div class="row text-center">
-                            <img style="border-radius:50%;width:75px; height:auto;" src="@(Model.player.ProfileImage != null ? Html.Raw(Model.player.ProfileImage) : (Model.player.Gender == "Male" ? Html.Raw("/Graphics/male_avatar.png") : (Model.player.Gender == "Female" ? Html.Raw("/Graphics/female_avatar.png") : Html.Raw("/Graphics/default_avatar.png"))))" alt="User Profile Image" />
-                            <h3>@Model.player.FirstName @Model.player.LastName</h3>
-                        </div>
-                        <div class="row text-center">
-                            <h4>@((Model.player.BirthDate.HasValue) ? Html.Raw("Age: " + age) : Html.Raw("") ) Gender: @Model.player.Gender</h4>
-                        </div>
-                        <div class="row text-center">
-                            @if (Model.player.Height != 0)
-                            {
-                                <h4>@((int)(Model.player.Height / 12)) Feet @((int)(Model.player.Height % 12)) Inches</h4>
-                            }
-                            @if (Model.player.Weight != 0)
-                            {
-                                <h4>@Model.player.Weight lb</h4>
-                            }
-                        </div>
+                <div style="box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                    <div class="row text-center">
+                        <img style="border-radius:50%;width:75px; height:auto;" src="@(Model.player.ProfileImage != null ? Html.Raw(Model.player.ProfileImage) : (Model.player.Gender == "Male" ? Html.Raw("/Graphics/male_avatar.png") : (Model.player.Gender == "Female" ? Html.Raw("/Graphics/female_avatar.png") : Html.Raw("/Graphics/default_avatar.png"))))" alt="User Profile Image" />
+                        <h3>@Model.player.FirstName @Model.player.LastName</h3>
                     </div>
-                      
+                    <div class="row text-center">
+                        <h4>@((Model.player.BirthDate.HasValue) ? Html.Raw("Age: " + age) : Html.Raw("") ) Gender: @Model.player.Gender</h4>
+                    </div>
+                    <div class="row text-center">
+                        @if (Model.player.Height != 0)
+                        {
+                            <h4>@((int)(Model.player.Height / 12)) Feet @((int)(Model.player.Height % 12)) Inches</h4>
+                        }
+                        @if (Model.player.Weight != 0)
+                        {
+                            <h4>@Model.player.Weight lb</h4>
+                        }
+                    </div>
+                </div>
+
             }
         </div>
-        <div class="col-md-6">
+        <div class="col-md-4">
             <h2>Teams</h2>
             <hr />
             @if (User.Identity.GetUserId() == Model.player.UserID)
             {
                 <div class="container" style="padding-bottom:30px;">
                     <div class="row">
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <button type="button" data-toggle="modal" data-target="#createTeamModal" style="background-color:transparent; border:0px;"><img style="width:20px;height:auto;" src="~/Graphics/add.png" />Create Team</button>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <button type="button" data-toggle="modal" data-target="#joinTeamModal" style="background-color:transparent; border:0px;"><img style="width:20px;height:auto;" src="~/Graphics/join.png" />Join Team</button>
                         </div>
                         <div class="col-md-6"></div>
@@ -206,6 +206,34 @@ new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-s
                                 {
                                     <button name="teamID" value="@team.TeamID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
                                         <p style="font-size:15px;padding-top:5px;">@team.TeamName</p> <p style="vertical-align:bottom">@team.Wins - @team.Losses</p> <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                                    </button>
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        <div class="col-md-4">
+            <h2>Pinned Facilities</h2>
+            <hr />
+            <div class="container" style="height:300px;width:auto;overflow-y:auto;">
+                @if (Model.player.Facilities == null || Model.player.Facilities.Count == 0)
+                {
+                    <p>There are no pinned facilities. Pin facilities on the facility page.</p>
+                }
+                else
+                {
+                    foreach (Facility facility in Model.player.Facilities)
+                    {
+                        <div class="row">
+                            <div class="col" style="padding:10px;">
+                                @using (Html.BeginForm("Facility", "Dashboard", FormMethod.Get))
+                                {                                   
+                                    <button name="facilityID" value="@facility.FacilityID" type="submit" style="border-radius:30px;width:90%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                        <p style="font-size:15px;padding-top:5px;">@facility.FacilityName, @facility.Courts.Count Courts</p>
+                                        <p style="vertical-align:bottom">@facility.Address</p>
+                                        <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
                                     </button>
                                 }
                             </div>
