@@ -16,7 +16,8 @@ namespace CourtFinder.Migrations
         protected override void Seed(CourtFinder.Models.ApplicationDbContext context)
         {
             //  This method will be called after migrating to the latest version.
-            /*context.Days.AddOrUpdate(new Models.Day {Description = "Monday" });
+            /*
+            context.Days.AddOrUpdate(new Models.Day {Description = "Monday" });
             context.Days.AddOrUpdate(new Models.Day { Description = "Tuesday" });
             context.Days.AddOrUpdate(new Models.Day { Description = "Wednesday" });
             context.Days.AddOrUpdate(new Models.Day { Description = "Thursday" });
@@ -27,19 +28,20 @@ namespace CourtFinder.Migrations
             {
                 for (int minute = 0; minute < 6; minute++)
                 context.Times.AddOrUpdate(new Models.Time { Description = new TimeSpan(hour, minute * 10, 0)});
-            }*/
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data.
-            //context.Roles.AddOrUpdate(new IdentityRole { Name = "Player" });
-            //context.Roles.AddOrUpdate(new IdentityRole { Name = "FacilityManager" });
-            //context.Sports.AddOrUpdate(new Models.Sport { Description = "Basketball" });
-            //context.Sports.AddOrUpdate(new Models.Sport { Description = "Baseball" });
-            //context.Sports.AddOrUpdate(new Models.Sport { Description = "Soccer" });
-            //context.Sports.AddOrUpdate(new Models.Sport { Description = "Volleyball" });
-            //context.Sports.AddOrUpdate(new Models.Sport { Description = "Badminton" });
-            //context.Sports.AddOrUpdate(new Models.Sport { Description = "Table Tennis" });
-            //context.Sports.AddOrUpdate(new Models.Sport { Description = "Softball" });
-            //context.SaveChanges();
+            }
+             // You can use the DbSet<T>.AddOrUpdate() helper extension method 
+             // to avoid creating duplicate seed data.
+            context.Roles.AddOrUpdate(new IdentityRole { Name = "Player" });
+            context.Roles.AddOrUpdate(new IdentityRole { Name = "FacilityManager" });
+            context.Sports.AddOrUpdate(new Models.Sport { Description = "Basketball" });
+            context.Sports.AddOrUpdate(new Models.Sport { Description = "Baseball" });
+            context.Sports.AddOrUpdate(new Models.Sport { Description = "Soccer" });
+            context.Sports.AddOrUpdate(new Models.Sport { Description = "Volleyball" });
+            context.Sports.AddOrUpdate(new Models.Sport { Description = "Badminton" });
+            context.Sports.AddOrUpdate(new Models.Sport { Description = "Table Tennis" });
+            context.Sports.AddOrUpdate(new Models.Sport { Description = "Softball" });
+            context.SaveChanges();
+            */
         }
     }
 }

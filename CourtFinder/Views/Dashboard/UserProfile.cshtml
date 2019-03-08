@@ -152,26 +152,26 @@ new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-s
             }
             else
             {
-                    <div style="box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
-                        <div class="row text-center">
-                            <img style="border-radius:50%;width:75px; height:auto;" src="@(Model.player.ProfileImage != null ? Html.Raw(Model.player.ProfileImage) : (Model.player.Gender == "Male" ? Html.Raw("/Graphics/male_avatar.png") : (Model.player.Gender == "Female" ? Html.Raw("/Graphics/female_avatar.png") : Html.Raw("/Graphics/default_avatar.png"))))" alt="User Profile Image" />
-                            <h3>@Model.player.FirstName @Model.player.LastName</h3>
-                        </div>
-                        <div class="row text-center">
-                            <h4>@((Model.player.BirthDate.HasValue) ? Html.Raw("Age: " + age) : Html.Raw("") ) Gender: @Model.player.Gender</h4>
-                        </div>
-                        <div class="row text-center">
-                            @if (Model.player.Height != 0)
-                            {
-                                <h4>@((int)(Model.player.Height / 12)) Feet @((int)(Model.player.Height % 12)) Inches</h4>
-                            }
-                            @if (Model.player.Weight != 0)
-                            {
-                                <h4>@Model.player.Weight lb</h4>
-                            }
-                        </div>
+                <div style="box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                    <div class="row text-center">
+                        <img style="border-radius:50%;width:75px; height:auto;" src="@(Model.player.ProfileImage != null ? Html.Raw(Model.player.ProfileImage) : (Model.player.Gender == "Male" ? Html.Raw("/Graphics/male_avatar.png") : (Model.player.Gender == "Female" ? Html.Raw("/Graphics/female_avatar.png") : Html.Raw("/Graphics/default_avatar.png"))))" alt="User Profile Image" />
+                        <h3>@Model.player.FirstName @Model.player.LastName</h3>
                     </div>
-                      
+                    <div class="row text-center">
+                        <h4>@((Model.player.BirthDate.HasValue) ? Html.Raw("Age: " + age) : Html.Raw("") ) Gender: @Model.player.Gender</h4>
+                    </div>
+                    <div class="row text-center">
+                        @if (Model.player.Height != 0)
+                        {
+                            <h4>@((int)(Model.player.Height / 12)) Feet @((int)(Model.player.Height % 12)) Inches</h4>
+                        }
+                        @if (Model.player.Weight != 0)
+                        {
+                            <h4>@Model.player.Weight lb</h4>
+                        }
+                    </div>
+                </div>
+
             }
         </div>
         <div class="col-md-6">
@@ -181,13 +181,15 @@ new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-s
             {
                 <div class="container" style="padding-bottom:30px;">
                     <div class="row">
-                        <div class="col-md-3">
-                            <button type="button" data-toggle="modal" data-target="#createTeamModal" style="background-color:transparent; border:0px;"><img style="width:20px;height:auto;" src="~/Graphics/add.png" />Create Team</button>
+                        <div class="col-md-2">
+                            <button type="button" data-toggle="modal" data-target="#createTeamModal" style="background-color:transparent; border:0px;"><img style="width:20px;height:auto;" src="~/Graphics/add.png" /> Create Team</button>
                         </div>
-                        <div class="col-md-3">
-                            <button type="button" data-toggle="modal" data-target="#joinTeamModal" style="background-color:transparent; border:0px;"><img style="width:20px;height:auto;" src="~/Graphics/join.png" />Join Team</button>
+                        <div class="col-md-2">
+                            <button type="button" data-toggle="modal" data-target="#joinTeamModal" style="background-color:transparent; border:0px;"><img style="width:20px;height:auto;" src="~/Graphics/join.png" /> Join Team</button>
                         </div>
-                        <div class="col-md-6"></div>
+                        <div class="col-md-2">
+                            <button type="button" data-toggle="modal" data-target="#leaveTeamModal" style="background-color:transparent; border:0px;"><img style="width:18px;height:auto;" src="~/Graphics/subtract.png" /> Leave Team</button>
+                        </div>
                     </div>
                 </div>
             }
@@ -274,3 +276,38 @@ new { @class = "form-contol", @style = "padding:8px 20% 8px 20%;border:0px;box-s
 </div>
 
 
+<div class="modal fade" id="leaveTeamModal" tabindex="-1" role="dialog" aria-labelledby="leaveTeamModalLabel" aria-hidden="true">
+<div class="modal-dialog" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="leaveTeamModalLabel">Leave Team</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <div class="container" style="height:300px;width:auto;overflow-y:auto;">
+            @if (Model.teams == null || Model.teams.Count == 0)
+            {
+                <p>You currently are not part of any teams.</p>
+            }
+            else
+            {
+                foreach (Team team in Model.teams)
+                {
+                    <div class="row">
+                        <div class="col" style="padding:10px;">
+                            @using (Html.BeginForm("LeaveTeam", "Dashboard", FormMethod.Post))
+                            {
+                                <button name="teamID" value="@team.TeamID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                    <p style="font-size:15px;padding-top:5px;">@team.TeamName</p> <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</div>
+</div>

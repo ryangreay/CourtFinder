@@ -186,10 +186,32 @@ namespace CourtFinder.Controllers
             return View("UserProfile", model);
         }       
 
+        [HttpPost]
+        public ActionResult LeaveTeam(ProfileViewModel model, string teamID)
+        {
+            string userid = User.Identity.GetUserId();
+            int intTeamID = int.Parse(teamID);
+            Player me = db.Players.Where(val => val.UserID == userid).FirstOrDefault();
+            Team team = db.Teams.Where(val => val.TeamID == intTeamID).FirstOrDefault();
+
+            team.Players.Remove(me);
+            if(team.Players.Count() == 0 || team.Players == null)
+            {
+                db.Teams.Remove(team);
+            }
+
+            db.SaveChanges();
+            //model.teams.Remove(team);            
+
+            return View("UserProfile", model);
+        }
+
         [HttpGet]
         public ActionResult Team(string teamID)
         {
             TeamViewModel model = new TeamViewModel();
+            string userID = User.Identity.GetUserId();
+
             if (teamID != null)
             {
                 int intTeamID = int.Parse(teamID);
@@ -197,6 +219,10 @@ namespace CourtFinder.Controllers
                 
                 model.team = team;
             }
+
+            List<Player> players = db.Players.Where(val => val.UserID != userID).ToList();
+            model.allPlayers = players;
+
             return View(model);
         }
 
@@ -208,6 +234,22 @@ namespace CourtFinder.Controllers
             db.SaveChanges();
             model.team = team;
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult AddTeammate(TeamViewModel model, int teamID, int playerID)
+        {
+            Team team = db.Teams.Where(val => val.TeamID == teamID).FirstOrDefault();
+            Player playerToAdd = db.Players.Where(val => val.PlayerID == playerID).FirstOrDefault();
+
+            team.Players.Add(playerToAdd);
+            playerToAdd.Teams.Add(team);
+
+            db.SaveChanges();
+
+            model.team = team;
+
+            return View("Team", model);
         }
 
         [HttpGet]

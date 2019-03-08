@@ -19,9 +19,9 @@
     <UseIISExpress>true</UseIISExpress>
     <Use64BitIISExpress />
     <IISExpressSSLPort>44370</IISExpressSSLPort>
-    <IISExpressAnonymousAuthentication />
-    <IISExpressWindowsAuthentication />
-    <IISExpressUseClassicPipelineMode />
+    <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
+    <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
+    <IISExpressUseClassicPipelineMode>false</IISExpressUseClassicPipelineMode>
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
@@ -268,6 +268,10 @@
     <Compile Include="Migrations\201903031729442_update.Designer.cs">
       <DependentUpon>201903031729442_update.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201903032151165_added players list to TeamViewModel.cs" />
+    <Compile Include="Migrations\201903032151165_added players list to TeamViewModel.Designer.cs">
+      <DependentUpon>201903032151165_added players list to TeamViewModel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Bracket.cs" />
@@ -310,6 +314,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Graphics\search.png" />
     <Content Include="Graphics\sport.png" />
+    <Content Include="Graphics\subtract.png" />
     <Content Include="Graphics\team.png" />
     <Content Include="Graphics\trophy.png" />
     <Content Include="Scripts\bootstrap.js" />
@@ -437,6 +442,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201903031729442_update.resx">
       <DependentUpon>201903031729442_update.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201903032151165_added players list to TeamViewModel.resx">
+      <DependentUpon>201903032151165_added players list to TeamViewModel.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>

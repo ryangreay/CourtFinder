@@ -53,6 +53,7 @@ namespace CourtFinder.Models
 
     public class TeamViewModel
     {
+        public List<Player> allPlayers { get; set; }
         public Team team { get; set; }
     }
 
