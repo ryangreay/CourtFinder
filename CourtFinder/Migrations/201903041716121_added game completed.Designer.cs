@@ -7,13 +7,13 @@ namespace CourtFinder.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class addedsportslisttofacility : IMigrationMetadata
+    public sealed partial class addedgamecompleted : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(addedsportslisttofacility));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(addedgamecompleted));
         
         string IMigrationMetadata.Id
         {
-            get { return "201902251837405_added sports list to facility"; }
+            get { return "201903041716121_added game completed"; }
         }
         
         string IMigrationMetadata.Source

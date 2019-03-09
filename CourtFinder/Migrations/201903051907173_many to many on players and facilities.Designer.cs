@@ -7,13 +7,13 @@ namespace CourtFinder.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.2.0-61023")]
-    public sealed partial class changedfacilitylatlongtodouble : IMigrationMetadata
+    public sealed partial class manytomanyonplayersandfacilities : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(changedfacilitylatlongtodouble));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(manytomanyonplayersandfacilities));
         
         string IMigrationMetadata.Id
         {
-            get { return "201902251810519_changed facility lat long to double"; }
+            get { return "201903051907173_many to many on players and facilities"; }
         }
         
         string IMigrationMetadata.Source

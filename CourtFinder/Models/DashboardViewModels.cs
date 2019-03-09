@@ -49,18 +49,22 @@ namespace CourtFinder.Models
         public int? teamSize { get; set; }
         public int? minTeams { get; set; }
         public int? maxTeams { get; set; }
+
+        //did user pin this
+        public bool isPinned { get; set; }
     }
 
     public class TeamViewModel
     {
         public List<Player> allPlayers { get; set; }
         public Team team { get; set; }
+        public List<Game> games { get; set; }
     }
 
     public class GameViewModel
     {
         public Game game { get; set; }
-        public League league { get; set; }
+        public Facility facility { get; set; }
         public int winningTeamID { get; set; }
     }
 
@@ -74,6 +78,7 @@ namespace CourtFinder.Models
         //general league info
         public League league { get; set; }
         public Facility facility { get; set; }
+        public List<BracketResult> results { get; set; }
 
         //User join league
         public int teamSignupID { get; set; }

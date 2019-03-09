@@ -12,6 +12,7 @@ namespace CourtFinder.Models
             this.Courts = new HashSet<Court>();
             this.Leagues = new HashSet<League>();
             this.Sports = new HashSet<Sport>();
+            this.Players = new HashSet<Player>();
         }
         public int FacilityID { get; set; }
         public string FacilityName { get; set; }
@@ -22,5 +23,6 @@ namespace CourtFinder.Models
         public virtual ICollection<League> Leagues { get; set; }
         public virtual ICollection<Sport> Sports { get; set; }
         public virtual FacilityManager FacilityManager { get; set; }
+        public virtual ICollection<Player> Players { get; set; }
     }
 }
