@@ -212,6 +212,7 @@ namespace CourtFinder.Controllers
         [HttpGet]
         public ActionResult Team(int teamID)
         {
+            string userID = User.Identity.GetUserId();
             TeamViewModel model = new TeamViewModel();
             model.games = new List<Game>();
             if (teamID != 0)
