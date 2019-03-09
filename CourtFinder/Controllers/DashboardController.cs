@@ -195,12 +195,13 @@ namespace CourtFinder.Controllers
             Team team = db.Teams.Where(val => val.TeamID == intTeamID).FirstOrDefault();
 
             team.Players.Remove(me);
-            if(team.Players.Count() == 0 || team.Players == null)
+            if (team.Players.Count() == 0 || team.Players == null)
             {
                 db.Teams.Remove(team);
             }
 
             db.SaveChanges();
+            model.player = me;
             //model.teams.Remove(team);            
 
             return View("UserProfile", model);
@@ -220,7 +221,7 @@ namespace CourtFinder.Controllers
                 model.team = team;
             }
 
-            List<Player> players = db.Players.Where(val => val.UserID != userID).ToList();
+            List<Player> players = db.Players.Where(val => val.UserID != userID ).ToList();
             model.allPlayers = players;
 
             return View(model);
