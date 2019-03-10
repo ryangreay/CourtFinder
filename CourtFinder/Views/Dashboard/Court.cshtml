@@ -26,6 +26,9 @@
                     <div class="col-md-2" style="margin-right:20px;">
                         <button name="gameID" value="@game.GameID" type="submit" style="margin-left:10px; margin-right:10px; margin-top:4%;border-radius:30px;width:200px;height:200px;background:linear-gradient(175deg, whitesmoke 50%, #fbfbfb 25%); border:0px;border:0px;box-shadow:0px 3px 6px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
                             <p style="font-size:15px;padding-top:5px;">Gametime: @game.GameStart.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture) - @game.GameEnd.ToString("h:mm tt", CultureInfo.InvariantCulture)</p>
+                            <p>
+                                @Model.leagues.Where(val => val.Bracket.Games.Select(g => g.GameID).Contains(game.GameID)).Select(val => val.LeagueName).FirstOrDefault()
+                            </p>
                             <p style="vertical-align:bottom">
                                 @game.Team1.TeamName vs. @game.Team2.TeamName 
                             </p>

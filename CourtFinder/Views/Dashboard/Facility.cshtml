@@ -155,7 +155,9 @@
                             <div class="col" style="padding:10px;">
                                 @using (Html.BeginForm("Court", "Dashboard", FormMethod.Get))
                                 {
-                                    <button name="courtID" value="@court.CourtID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
+                                    <input name="courtID" value="@court.CourtID" style="display:none;" />
+                                    <input name="facilityID" value="@Model.facility.FacilityID" style="display:none;" />
+                                    <button type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
                                         <p style="font-size:15px;padding-top:5px;"> @court.CourtName</p>
                                         <i class="fa fa-angle-right" style="float:right;padding-right:5px;margin-top:-8%;"></i>
                                     </button>
@@ -209,14 +211,14 @@
                         @Html.TextBoxFor(m => m.registerStartMonth, new { @value = Model.registerStartMonth.ToString(), @class = "form-control", @placeholder = "MM",
                        @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-1" style="width:2%; padding:0px; font-size:23px;">
                         /
                     </div>
                     <div class="col-md-2">
                         @Html.TextBoxFor(m => m.registerStartDay, new { @value = Model.registerStartDay.ToString(), @class = "form-control", @placeholder = "DD",
                        @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-1" style="width:2%; padding:0px; font-size:23px;">
                         /
                     </div>
                     <div class="col-md-3">
@@ -233,14 +235,14 @@
                         @Html.TextBoxFor(m => m.registerEndMonth, new { @value = Model.registerEndMonth.ToString(), @class = "form-control", @placeholder = "MM",
                        @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-1" style="width:2%; padding:0px; font-size:23px;">
                         /
                     </div>
                     <div class="col-md-2">
                         @Html.TextBoxFor(m => m.registerEndDay, new { @value = Model.registerEndDay.ToString(), @class = "form-control", @placeholder = "DD",
                        @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-1" style="width:2%; padding:0px; font-size:23px;">
                         /
                     </div>
                     <div class="col-md-3">

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -71,6 +72,7 @@ namespace CourtFinder.Models
     public class CourtViewModel
     {
         public Court court { get; set; }
+        public List<League> leagues { get; set; }
     }
 
     public class LeagueViewModel

@@ -203,10 +203,10 @@ namespace CourtFinder.Controllers
             }
 
             db.SaveChanges();
-            model.player = me;
+            //model.player = me;
             //model.teams.Remove(team);            
 
-            return View("UserProfile", model);
+            return RedirectToAction("UserProfile", "Dashboard");
         }
 
         [HttpGet]
@@ -221,7 +221,10 @@ namespace CourtFinder.Controllers
                 //of, then what brackets are associated with those leagues, and then for each bracket, what games do we
                 //have scheduled
                 Team team = db.Teams.Where(val => val.TeamID == teamID).FirstOrDefault();
-                List<int> bracketIDs = db.Leagues.Where(val => val.Teams.Select(t => t.TeamID).Contains(teamID)).Select(l => l.Bracket.BracketID).ToList();
+                //List<Bracket> brackets1 = db.Leagues.Where(val => val.Teams.Select(t => t.TeamID).Contains(teamID)).Select(l => l.Bracket).ToList();
+                List<int> bracketIDs = db.Leagues
+                    .Where(val => val.Teams.Select(t => t.TeamID).Contains(teamID) && val.Bracket != null)
+                    .Select(l => l.Bracket.BracketID).ToList();
                 List<Bracket> brackets = db.Brackets.Where(val => bracketIDs.Contains(val.BracketID)).ToList();
                 foreach (Bracket bracket in brackets)
                 {
@@ -243,7 +246,6 @@ namespace CourtFinder.Controllers
             Team team = db.Teams.Where(val => val.TeamID == model.team.TeamID).FirstOrDefault();
             team.TeamName = model.team.TeamName;
             db.SaveChanges();
-            //model.team = team;
             return RedirectToAction("Team", "Dashboard", new { teamID = team.TeamID });
         }
 
@@ -258,9 +260,7 @@ namespace CourtFinder.Controllers
 
             db.SaveChanges();
 
-            model.team = team;
-
-            return View("Team", model);
+            return RedirectToAction("Team", "Dashboard", new { teamID = team.TeamID });
         }
 
         [HttpGet]
@@ -276,7 +276,7 @@ namespace CourtFinder.Controllers
                 model.Distance = int.Parse(distance);
             else
                 model.Distance = 10;
-            if (sport != null && sport != "")
+            if (sport != null && sport != "" && sport != "Sport")
                 model.sport = db.Sports.Where(val => val.Description == sport).FirstOrDefault();
             else
                 model.sport = null;
@@ -288,6 +288,9 @@ namespace CourtFinder.Controllers
                                                         Convert.ToDouble(player != null ? player.Longitude : manager.Longitude));
                 facilities = db.Facility.AsEnumerable()
                     .Where(val => new GeoCoordinate(val.Latitude, val.Longitude).GetDistanceTo(coord) < (model.Distance * 1609.344)).ToList();
+                facilities = facilities.Where(val =>
+                    (model.sport != null && val.Sports.Select(s => s.SportID).Contains(model.sport.SportID)) ||
+                    (model.sport == null)).ToList();
             }
 
             model.facilities = facilities;
@@ -391,6 +394,7 @@ namespace CourtFinder.Controllers
             if (model.facilitySports != null)
             {
                 me.Sports.Clear();
+                //db.Sports.Where(val => val.Facilities.Select(f => f.FacilityID).Contains(me.FacilityID))
                 me.Sports = db.Sports.Where(val => model.facilitySports.Contains(val.Description)).ToList();
             }
 
@@ -465,7 +469,8 @@ namespace CourtFinder.Controllers
             model.registerEndMonth = model.league.RegisterEndPeriod.Month;
             model.registerEndDay = model.league.RegisterEndPeriod.Day;
             model.registerEndYear = model.league.RegisterEndPeriod.Year;
-
+            ViewBag.SignupError = TempData["SignupError"] != null ? TempData["SignupError"].ToString() : "";
+            ViewBag.BracketError = TempData["BracketError"] != null ? TempData["BracketError"].ToString() : "";
             return View(model);
         }
 
@@ -511,6 +516,23 @@ namespace CourtFinder.Controllers
             {
                 league.Teams.Add(team);
                 db.SaveChanges();
+                ViewBag.SignupError = "";
+            }
+            else if (league.MaxTeams < (league.Teams.Count + 1))
+            {
+                TempData["SignupError"] = "The maximum amount of teams are already registered.";
+            }
+            else if (league.RegisterStartPeriod > DateTime.Now || league.RegisterEndPeriod < DateTime.Now)
+            {
+                TempData["SignupError"] = "It is not during the register sign up period.";
+            }
+            else if (league.TeamSize != team.Players.Count)
+            {
+                TempData["SignupError"] = "Your team member count does not match the league requirement.";
+            }
+            else if (league.Teams.Where(t => team.Players.Any(tp => t.Players.Contains(tp))).Count() != 0)
+            {
+                TempData["SignupError"] = "Your team is already signed up or you have members on your team on another team.";
             }
 
             return RedirectToAction("League", "Dashboard", new { leagueID });
@@ -587,14 +609,18 @@ namespace CourtFinder.Controllers
                             unscheduledTeams.RemoveAt(0);
                             unscheduledTeams.RemoveAt(unscheduledTeams.Count - 1);
                         }
-                        
+                        else
+                        {
+                            TempData["BracketError"] = "Not enough available times to schedule games. Open up available days and times to schedule games.";
+                            goto doneScheduling; //leave scheduling algorithm without saving if any teams cant be scheduled. initial scheduling is atomic.
+                        }
                     }
 
                     league.Bracket = bracket;
                     db.SaveChanges();
                 }           
             }
-
+            doneScheduling:;
             return RedirectToAction("League", "Dashboard", new { leagueID });
         }
 
@@ -609,8 +635,12 @@ namespace CourtFinder.Controllers
             //from the league
             Bracket bracket = db.Brackets.Where(val => val.Games.Select(g => g.GameID).Contains(model.game.GameID)).FirstOrDefault();
             League league = db.Leagues.Where(val => val.Bracket.BracketID == bracket.BracketID).FirstOrDefault();
-            Facility facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(league.LeagueID)).FirstOrDefault();
-            model.facility = facility;
+            if (league != null)
+            {
+                Facility facility = db.Facility.Where(val => val.Leagues.Select(l => l.LeagueID).Contains(league.LeagueID)).FirstOrDefault();
+                model.facility = facility;
+            }
+
             return View(model);
         }
 
@@ -699,11 +729,14 @@ namespace CourtFinder.Controllers
         }
 
         [HttpGet]
-        public ActionResult Court(string courtID)
+        public ActionResult Court(string courtID, string facilityID)
         {
             CourtViewModel model = new CourtViewModel();
             int intCourtID = int.Parse(courtID);
+            int intFacilityID = int.Parse(facilityID);
             model.court = db.Courts.Where(val => val.CourtID == intCourtID).FirstOrDefault();
+            Facility facility = db.Facility.Where(val => val.FacilityID == intFacilityID).FirstOrDefault();
+            model.leagues = facility.Leagues.ToList();
             return View(model);
         }
 

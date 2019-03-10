@@ -51,7 +51,7 @@
                         </div>
                         
                         <div class="row text-center">
-                            
+                            <p style="color:indianred">@ViewBag.SignupError</p>
                             @if (Model.league.RegisterStartPeriod > DateTime.Now || Model.league.RegisterEndPeriod < DateTime.Now)
                             {
                                 <p>You can sign up for the league during the register period</p>
@@ -66,7 +66,7 @@
                 else
                 {
                     List<Team> teamsList = new List<Team>();
-                    if (Model.results.Count == 0)
+                    if (Model.results == null || Model.results.Count == 0)
                     {
                         teamsList = Model.league.Teams.OrderBy(val => (val.Wins / (val.Wins + val.Losses == 0 ? 1 : val.Wins + val.Losses))).ToList();
                     }
@@ -86,12 +86,12 @@
                                     <button name="teamID" value="@team.TeamID" type="submit" style="border-radius:30px;width:100%;height:20%; background-color:ghostwhite; border:0px;border:0px;box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)">
                                         <p style="font-size:15px;padding-top:5px;margin-bottom:0px;">
                                         @team.TeamName  
-                                        @(Model.league.Bracket.Games.All(val => val.GameCompleted) && count == 0 ? Html.Raw("<img src=\"/Graphics/trophy.png\" style=\"width:20px; height:auto;\" />") : Html.Raw("") )
+                                        @(Model.league.Bracket != null && Model.league.Bracket.Games.All(val => val.GameCompleted) && count == 0 ? Html.Raw("<img src=\"/Graphics/trophy.png\" style=\"width:20px; height:auto;\" />") : Html.Raw("") )
                                         </p>
                                         <p style="vertical-align:bottom">
                                             @{
                                                 string wl = "";
-                                                if (Model.results.Count == 0)
+                                                if (Model.results == null || Model.results.Count == 0)
                                                 {
                                                     wl = team.Wins + " - " + team.Losses;
                                                 }
@@ -119,6 +119,7 @@
                 <button type="button" data-toggle="modal" data-target="#createBracketModal" style="text-align:center; background-color:transparent; border:0px;">
                     <img style="width:20px;height:auto;" src="~/Graphics/add.png" />Create Bracket
                 </button>
+                <p>@ViewBag.BracketError</p>
             }
             <div style="height:300px;width:auto;overflow-y:auto;">
                 @if (Model.league.Bracket == null || Model.league.Bracket.Games == null || Model.league.Bracket.Games.Count == 0)
@@ -127,6 +128,7 @@
                 }
                 else
                 {
+                    
                     foreach (Game game in Model.league.Bracket.Games.OrderBy(val => val.GameCompleted).ThenBy(val => val.GameStart))
                     {
                         using (Html.BeginForm("Game", "Dashboard", FormMethod.Get))
@@ -182,13 +184,13 @@
                         <div class="col-md-2">
                             @Html.TextBoxFor(m => m.registerStartMonth, new { @value = Model.registerStartMonth.ToString(), @class = "form-control", @placeholder = "MM", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-1" style="width:2%; padding:0px; font-size:23px;">
                             /
                         </div>
                         <div class="col-md-2">
                             @Html.TextBoxFor(m => m.registerStartDay, new { @value = Model.registerStartDay.ToString(), @class = "form-control", @placeholder = "DD", @style = " border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-1" style="width:2%; padding:0px; font-size:23px;">
                             /
                         </div>
                         <div class="col-md-3">
@@ -202,13 +204,13 @@
                         <div class="col-md-2">
                             @Html.TextBoxFor(m => m.registerEndMonth, new { @value = Model.registerEndMonth.ToString(), @class = "form-control", @placeholder = "MM", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-1" style="width:2%; padding:0px; font-size:23px;">
                             /
                         </div>
                         <div class="col-md-2">
                             @Html.TextBoxFor(m => m.registerEndDay, new { @value = Model.registerEndDay.ToString(), @class = "form-control", @placeholder = "DD", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                         </div>
-                        <div class="col-md-1">
+                        <div class="col-md-1" style="width:2%; padding:0px; font-size:23px;">
                             /
                         </div>
                         <div class="col-md-3">
@@ -277,13 +279,13 @@
                     <div class="col-md-2">
                         @Html.TextBoxFor(m => m.gameStartMonth, new { @class = "form-control", @placeholder = "MM", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-1" style="width:2%; padding:0px; font-size:23px;">
                         /
                     </div>
                     <div class="col-md-2">
                         @Html.TextBoxFor(m => m.gameStartDay, new { @class = "form-control", @placeholder = "DD", @style = "border:0px; box-shadow:0px 1px 3px rgba(50,50,93,0.15), 0px 1px 0px rgba(0,0,0,0.02)" })
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-1" style="width:2%; padding:0px; font-size:23px;">
                         /
                     </div>
                     <div class="col-md-3">

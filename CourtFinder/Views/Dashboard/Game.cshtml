@@ -7,7 +7,7 @@
 }
 <div class="container">
     <div class="row text-center">
-        <h3> <a href="@Url.Action( "Court", new { courtID = Model.game.CourtID})">@Model.game.Court.CourtName</a>: @Model.game.GameStart.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture) - @Model.game.GameEnd.ToString("h:mm tt", CultureInfo.InvariantCulture)</h3>
+        <h3> <a href="@Url.Action( "Court", new { courtID = Model.game.CourtID, facilityID = Model.facility.FacilityID.ToString()})">@Model.game.Court.CourtName</a>: @Model.game.GameStart.ToString("MM/dd/yyyy h:mm tt", CultureInfo.InvariantCulture) - @Model.game.GameEnd.ToString("h:mm tt", CultureInfo.InvariantCulture)</h3>
         <hr />
     </div>
     <div class="row text-center">
@@ -53,7 +53,7 @@
         }
     </div>
 </div>
-@if (User.Identity.GetUserId() == Model.facility.FacilityManager.UserID)
+@if (Model.facility != null && User.Identity.GetUserId() == Model.facility.FacilityManager.UserID)
 {
     using (Html.BeginForm("Game", "Dashboard", new { gameID = Model.game.GameID }, FormMethod.Post, new { @class = "form" }))
     {
@@ -67,7 +67,7 @@
             <label class="custom-control-label" style="font-weight:normal" for="radioTeam2">@Model.game.Team2.TeamName</label>
         </div>
         <div class="row">
-            <button class="btn btn-primary" type="submit">Update</button>
+            <button class="btn btn-primary" type="submit" @(Model.game.WinningTeam != null ? "disabled" : "")>Update</button>
         </div>
     }
 }
