@@ -125,7 +125,6 @@
                                     <div class="col-md-2">
                                         <h4>@player.FirstName  @player.LastName</h4>
                                     </div>
-                                    <input id="playerID" name="playerID" value="0" type="text" style="display:none;" />
                                     <div class="col-sm-2">
                                         @using (Html.BeginForm("AddTeammate", "Dashboard", FormMethod.Post, new { @class = "form" }))
                                         {
@@ -133,6 +132,15 @@
                                             <input id="playerID" name="playerID" value="@player.PlayerID" type="text" style="display:none;" />
                                             <div class="col-md-2">
                                                 <button class="btn btn-primary" type="submit">Add Player</button>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div>
+                                        @using (Html.BeginForm("UserProfile", "Dashboard", FormMethod.Get))
+                                        {
+                                            <input id="playerID" name="playerID" value="@player.PlayerID" type="text" style="display:none;" />
+                                            <div class="col-md-2">
+                                                <button class="btn btn-primary" type="submit">View Player</button>
                                             </div>
                                         }
                                     </div>
