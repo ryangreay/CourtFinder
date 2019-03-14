@@ -11,6 +11,9 @@ using Microsoft.Owin.Security;
 using CourtFinder.Models;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System.IO;
+using SendGrid;
+using System.Configuration;
+using SendGrid.Helpers.Mail;
 
 namespace CourtFinder.Controllers
 {
@@ -278,7 +281,7 @@ namespace CourtFinder.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                if (user == null /*|| !(await UserManager.IsEmailConfirmedAsync(user.Id))*/)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -286,10 +289,21 @@ namespace CourtFinder.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
-                // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+
+                var client = new SendGridClient(ConfigurationManager.AppSettings["SendGridAPI"]);
+
+                var msg = MailHelper.CreateSingleEmail(new EmailAddress("rgray003@ucr.edu", "CourtFinder"),
+                    new EmailAddress(model.Email),
+                    "Reset Password",
+                    "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>",
+                    "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                var response = await client.SendEmailAsync(msg);
+
+                //await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
@@ -427,7 +441,7 @@ namespace CourtFinder.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl)
+        public async Task<ActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string lat, string lon, string returnUrl)
         {
             if (User.Identity.IsAuthenticated)
             {
@@ -446,7 +460,10 @@ namespace CourtFinder.Controllers
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    Player player = new Player() { UserID = user.Id };
+                    double latitude = Convert.ToDouble(lat);
+                    double longitude = Convert.ToDouble(lon);
+                    var role = await UserManager.AddToRolesAsync(user.Id, new string[] { "Player" });
+                    Player player = new Player() { UserID = user.Id, Latitude = latitude, Longitude = longitude };
                     db.Players.Add(player);
                     db.SaveChanges();
 

@@ -11,6 +11,10 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using CourtFinder.Models;
+using SendGrid.Helpers.Mail;
+using System.Net;
+using System.Configuration;
+using SendGrid;
 
 namespace CourtFinder
 {
@@ -18,8 +22,14 @@ namespace CourtFinder
     {
         public Task SendAsync(IdentityMessage message)
         {
-            // Plug in your email service here to send an email.
-            return Task.FromResult(0);
+            var client = new SendGridClient(ConfigurationManager.AppSettings["SendGridAPI"]);
+
+            var msg = MailHelper.CreateSingleEmail(new EmailAddress("rgray003@ucr.edu", "CourtFinder"),
+                new EmailAddress(message.Destination), 
+                message.Subject, message.Body, message.Body);
+
+            return client.SendEmailAsync(msg);
+
         }
     }
 
