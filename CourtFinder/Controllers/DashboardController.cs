@@ -232,10 +232,10 @@ namespace CourtFinder.Controllers
                 }
                 model.games = model.games.OrderBy(val => val.GameCompleted).ThenBy(val => val.GameStart).ToList();
                 model.team = team;
-            }
 
-            List<Player> players = db.Players.Where(val => val.UserID != userID ).ToList();
-            model.allPlayers = players;
+                List<Player> players = db.Players.Where(val => val.UserID != userID  && !val.Teams.Select(s => s.TeamID).Contains(teamID)).ToList();
+                model.allPlayers = players;
+            }
 
             return View(model);
         }
@@ -424,6 +424,23 @@ namespace CourtFinder.Controllers
                 db.SaveChanges();
             }
 
+            return RedirectToAction("Facility", "Dashboard", new { facilityID = facilityID.ToString() });
+        }
+
+        [HttpPost]
+        public ActionResult RemoveLeague(FacilityViewModel model, int facilityID, int leagueID)
+        {
+            //for each team in league, remove league from team
+            League league = db.Leagues.Where(val => val.LeagueID == leagueID).FirstOrDefault();
+            foreach (Team team in league.Teams)
+            {
+                team.Leagues.Remove(league);
+            }
+            //model.facility.Leagues.Remove(league);
+            db.Leagues.Remove(league);
+            db.SaveChanges();
+
+            //return View("Facility", model);
             return RedirectToAction("Facility", "Dashboard", new { facilityID = facilityID.ToString() });
         }
 
